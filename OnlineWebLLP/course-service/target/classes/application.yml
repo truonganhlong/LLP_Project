@@ -1,0 +1,23 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+server:
+  port: 8090
+spring:
+  application:
+    name: courses
+  config:
+    import: optional:configserver:http//localhost:8888
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://LAPTOP-FEV4I7LE;databaseName=LLPCourse;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: long70261209
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: sql_server
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
