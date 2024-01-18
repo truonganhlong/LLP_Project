@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "review")
 public class Review {
     @EmbeddedId
     private ReviewKey id;

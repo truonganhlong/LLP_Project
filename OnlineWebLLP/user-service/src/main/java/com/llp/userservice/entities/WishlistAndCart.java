@@ -14,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@Table(name = "wishlistAndCart")
 public class WishlistAndCart {
     @EmbeddedId
     private WishlistAndCartKey id;

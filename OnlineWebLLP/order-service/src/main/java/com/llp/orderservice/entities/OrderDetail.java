@@ -13,6 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@Table(name = "orderDetail")
 public class OrderDetail {
     @EmbeddedId
     private OrderDetailKey id;

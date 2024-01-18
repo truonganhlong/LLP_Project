@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "lastViewCourse")
 public class LastViewCourse {
     @EmbeddedId
     private LastViewCourseKey id;

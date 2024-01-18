@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "userNotification")
 public class UserNotification {
     @EmbeddedId
     private UserNotificationKey id;

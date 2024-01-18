@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "courseTopic")
 public class CourseTopic {
     @EmbeddedId
     private CourseTopicKey id;

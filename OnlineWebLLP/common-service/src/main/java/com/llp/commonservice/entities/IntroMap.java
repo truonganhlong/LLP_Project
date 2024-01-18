@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Table(name = "introMap")
 public class IntroMap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "prominentTopic")
 public class ProminentTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

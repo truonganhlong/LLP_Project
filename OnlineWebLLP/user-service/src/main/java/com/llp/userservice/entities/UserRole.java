@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "userRole")
 public class UserRole {
     @EmbeddedId
     private UserRoleKey id;

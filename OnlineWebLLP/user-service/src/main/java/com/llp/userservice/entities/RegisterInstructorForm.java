@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@Table(name = "registerInstructorForm")
 public class RegisterInstructorForm {
     @EmbeddedId
     private RegisterInstructorFormKey id;
