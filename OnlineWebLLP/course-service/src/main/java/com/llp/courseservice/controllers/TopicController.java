@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/topic")
+@RequestMapping("/api/course/topic")
 @RequiredArgsConstructor
 public class TopicController {
     private final TopicService topicService;

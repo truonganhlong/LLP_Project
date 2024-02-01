@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProminentTopicService {
     List<ProminentTopicAdminResponse> getAllByAdmin();
-    List<ProminentTopicUserResponse> getAllByUser();
+    List<ProminentTopicUserResponse> getAllByUser(Integer pageNo, Integer pageSize);
     ProminentTopicAdminResponse getById(int id);
     void create(ProminentTopicCreateRequest request);
     void update(int id, ProminentTopicUpdateRequest request);

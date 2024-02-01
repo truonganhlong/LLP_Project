@@ -5,6 +5,5 @@ import com.llp.courseservice.dtos.Course.CourseOverviewResponse;
 import java.util.UUID;
 
 public interface CourseService {
-    CourseOverviewResponse getCourseOverview(UUID id);
-
+    CourseOverviewResponse getCourseOverview(String id);
 }

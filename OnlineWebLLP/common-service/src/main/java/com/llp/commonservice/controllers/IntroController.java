@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/intro")
+@RequestMapping("/api/common/intro")
 @RequiredArgsConstructor
 public class IntroController {
     private final IntroService introService;

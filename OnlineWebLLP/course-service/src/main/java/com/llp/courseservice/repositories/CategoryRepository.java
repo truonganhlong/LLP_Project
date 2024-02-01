@@ -19,11 +19,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         String getImageLink();
     }
     Category getById(int id);
-    @Query(value = "SELECT id, name, imageLink\n" +
+    @Query(value = "SELECT dbo.category.id, dbo.category.name, dbo.category.imageLink\n" +
             "FROM     dbo.category\n" +
             "WHERE dbo.category.status = 1", nativeQuery = true)
     List<CategoryByUser> getAllByUser();
-    @Query(value = "SELECT id, name\n" +
+    @Query(value = "SELECT dbo.category.id, dbo.category.name\n" +
             "FROM     dbo.category\n" +
             "WHERE dbo.category.status = 1", nativeQuery = true)
     List<CategoryByName> getNameByUser();

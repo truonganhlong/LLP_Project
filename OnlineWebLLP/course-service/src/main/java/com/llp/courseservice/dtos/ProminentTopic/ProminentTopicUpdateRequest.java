@@ -13,6 +13,4 @@ public class ProminentTopicUpdateRequest {
     private String title;
     @JsonProperty()
     private String overview;
-    @JsonProperty()
-    private Long topicId;
 }

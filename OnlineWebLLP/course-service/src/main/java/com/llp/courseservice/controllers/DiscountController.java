@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/discount")
+@RequestMapping("/api/course/discount")
 @RequiredArgsConstructor
 public class DiscountController {
     private final DiscountService discountService;

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/level")
+@RequestMapping("/api/course/level")
 @RequiredArgsConstructor
 public class LevelController {
     private final LevelService levelService;
