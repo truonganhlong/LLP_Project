@@ -32,7 +32,7 @@ public class DiscountServiceImpl implements DiscountService {
                     .discountValue((double) request.getDiscountValue()/100)
                     .startTime(LocalDate.parse(request.getStartTime(), dateFormatter))
                     .endTime(LocalDate.parse(request.getEndTime(), dateFormatter))
-                    .course(courseRepository.getById(request.getCourseId()))
+                    .course(courseRepository.getById(UUID.fromString(request.getCourseId())))
                     .build();
             discountRepository.save(discount);
         } catch (Exception e){
@@ -41,9 +41,9 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public void delete(UUID courseId) {
+    public void delete(String courseId) {
         try {
-            Discount discount = discountRepository.getByCourseId(courseId);
+            Discount discount = discountRepository.getByCourseId(UUID.fromString(courseId));
             if(Objects.isNull(discount)){
                 throw new NotFoundException("Not found in database");
             }
@@ -56,9 +56,9 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public DiscountResponse getByCourseId(UUID courseId) {
+    public DiscountResponse getByCourseId(String courseId) {
         try {
-            Discount discount = discountRepository.getByCourseId(courseId);
+            Discount discount = discountRepository.getByCourseId(UUID.fromString(courseId));
             if(Objects.isNull(discount)){
                 throw new NotFoundException("Not found in database");
             }
@@ -71,15 +71,15 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public double returnDiscountPrice(UUID courseId) {
+    public double returnDiscountPrice(String courseId) {
         try {
-            Discount discount = discountRepository.getByCourseId(courseId);
+            Discount discount = discountRepository.getByCourseId(UUID.fromString(courseId));
             if(Objects.isNull(discount)){
                 return 0;
             }
             else {
                 double discountValue = discount.getDiscountValue();
-                double price = courseRepository.getById(courseId).getPrice();
+                double price = courseRepository.getById(UUID.fromString(courseId)).getPrice();
                 return price * discountValue;
             }
         } catch (Exception e){

@@ -6,6 +6,7 @@ import com.llp.courseservice.services.CategoryService;
 import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+    @Operation(summary = "Api 9: get all category in admin side")
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
@@ -30,7 +32,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 10: get name of all category in categories filter in homepage before login")
     @RequestMapping(value = "/allNameByUser", method = RequestMethod.GET)
     public ResponseEntity<?> getNameByUser(){
         try {
@@ -40,7 +42,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 11: get all category in top categories in homepage")
     @RequestMapping(value = "/allByUser", method = RequestMethod.GET)
     public ResponseEntity<?> getAllByUser(){
         try {
@@ -50,6 +52,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    @Operation(summary = "Api 12: get category by id")
     @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
@@ -61,7 +64,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 13: create category")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@RequestBody CategoryCreateRequest request){
         try {
@@ -73,7 +76,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 14: update category")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody CategoryUpdateRequest request){
         try {
@@ -87,7 +90,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 15: update category's status. if status = true then user can see")
     @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable int id){
         try {
@@ -99,7 +102,7 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 16: delete category")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {

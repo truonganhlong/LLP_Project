@@ -57,7 +57,7 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
                 for (var courseCardResponse:courseCardResponses) {
                     //feign client user later
                     courseCardResponse.setInstructor(null);
-                    courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId()));
+                    courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
                 }
                 prominentTopic.setCourseCardResponses(courseCardResponses);
             }

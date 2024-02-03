@@ -6,6 +6,7 @@ import com.llp.courseservice.services.TagService;
 import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TagController {
     private final TagService tagService;
-
+    @Operation(summary = "Api 46: get all tag in admin side")
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
@@ -27,7 +28,7 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 47: get tag by id")
     @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
@@ -39,7 +40,7 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 48: create tag")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody TagCreateRequest request){
         try {
@@ -49,7 +50,7 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 49: update tag")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody TagUpdateRequest request){
         try {
@@ -63,7 +64,7 @@ public class TagController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 50: delete tag")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {

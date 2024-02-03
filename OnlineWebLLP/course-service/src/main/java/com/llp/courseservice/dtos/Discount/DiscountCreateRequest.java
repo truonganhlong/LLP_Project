@@ -18,5 +18,5 @@ public class DiscountCreateRequest {
     @JsonProperty(required = true)
     private String endTime;
     @JsonProperty(required = true)
-    private UUID courseId;
+    private String courseId;
 }

@@ -6,6 +6,7 @@ import com.llp.courseservice.services.TopicService;
 import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TopicController {
     private final TopicService topicService;
+    @Operation(summary = "Api 51: get all topics in admin side")
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
@@ -26,7 +28,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 52: get topics filter by subCategoryId in admin side")
     @RequestMapping(value = "/byAdminFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByAdminFilterBySubCategory(@PathVariable int subCategoryId){
         try {
@@ -36,6 +38,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    @Operation(summary = "Api 53: get topics filter by subCategoryId in categories filter in homepage")
     @RequestMapping(value = "/byUserFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByUserFilterBySubCategory(@PathVariable int subCategoryId){
         try {
@@ -45,6 +48,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+    @Operation(summary = "Api 54: get topic by id")
     @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
@@ -56,7 +60,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 55: create topic")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody TopicCreateRequest request){
         try {
@@ -66,7 +70,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 56: update topic")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody TopicUpdateRequest request){
         try {
@@ -80,7 +84,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 57: update topic's status. when status = true, user can see")
     @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable int id){
         try {
@@ -92,7 +96,7 @@ public class TopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
+    @Operation(summary = "Api 58: delete topic")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {

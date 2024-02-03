@@ -14,7 +14,7 @@ public class CourseOverviewResponse {
     private UUID id;
     private String name;
     private String updatedAt;
-    private int duration;
+    private String duration;
     private String level;
     private String overview;
     private List<String> tag;

@@ -3,11 +3,14 @@ package com.llp.courseservice.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
 
 @Entity
 @AllArgsConstructor
@@ -19,6 +22,7 @@ import java.util.UUID;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(Types.VARCHAR)
     private UUID id;
     private String name;
     private String description;

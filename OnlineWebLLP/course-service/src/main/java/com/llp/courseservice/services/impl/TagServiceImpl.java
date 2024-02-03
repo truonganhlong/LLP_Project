@@ -95,9 +95,4 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-    @Override
-    public List<String> getTagNameByCourseId(UUID id) {
-        return null;
-    }
-
 }

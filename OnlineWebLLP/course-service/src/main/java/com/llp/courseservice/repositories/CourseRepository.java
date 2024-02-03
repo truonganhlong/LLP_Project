@@ -1,9 +1,11 @@
 package com.llp.courseservice.repositories;
 
 
+import com.llp.courseservice.dtos.Course.CourseCardJpql;
 import com.llp.courseservice.entities.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -44,7 +46,7 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
     @Query(value = "SELECT dbo.course.id, dbo.course.imageLink, dbo.course.name, dbo.course.createdBy, dbo.course.rating, dbo.course.ratingNum, dbo.course.price\n" +
             "FROM     dbo.course\n" +
             "WHERE  dbo.course.isProminent = 1", nativeQuery = true)
-    List<CourseCard> getAllProminentCourse();
+    List<CourseCard> getAllProminentCourse(Pageable pageable);
 
     @Query(value = "SELECT dbo.course.id, dbo.course.imageLink, dbo.course.name, dbo.course.createdBy, dbo.course.rating, dbo.course.ratingNum, dbo.course.price\n" +
             "FROM     dbo.course INNER JOIN\n" +
@@ -59,8 +61,9 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "         dbo.courseTopic ON dbo.course.id = dbo.courseTopic.courseId INNER JOIN\n" +
             "         dbo.topic ON dbo.courseTopic.topicId = dbo.topic.id INNER JOIN\n" +
             "         dbo.subCategory ON dbo.topic.subCategoryId = dbo.subCategory.id\n" +
-            "WHERE  dbo.subCategory.id = :subCategoryId AND dbo.course.isProminent = 1", nativeQuery = true)
-    List<CourseCard> getAllProminentCourseBySubCategoryId(@Param("subCategoryId") int subCategoryId);
+            "WHERE  dbo.subCategory.id = :subCategoryId AND dbo.course.isProminent = 1\n" +
+            "ORDER BY dbo.course.ratingNum DESC", nativeQuery = true)
+    List<CourseCard> getAllProminentCourseBySubCategoryId(@Param("subCategoryId") int subCategoryId, Pageable pageable);
 
     @Query(value = "SELECT dbo.course.id, dbo.course.imageLink, dbo.course.name, dbo.course.createdBy, dbo.course.rating, dbo.course.ratingNum, dbo.course.price\n" +
             "FROM     dbo.course INNER JOIN\n" +
@@ -69,6 +72,36 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "         dbo.subCategory ON dbo.topic.subCategoryId = dbo.subCategory.id INNER JOIN\n" +
             "         dbo.category ON dbo.subCategory.categoryId = dbo.category.id\n" +
             "WHERE  dbo.category.id = :categoryId AND dbo.course.isProminent = 1", nativeQuery = true)
-    List<CourseCard> getAllProminentCourseByCategoryId(@Param("categoryId") int categoryId);
+    List<CourseCard> getAllProminentCourseByCategoryId(@Param("categoryId") int categoryId, Pageable pageable);
 
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "WHERE t.id = :topicId")
+    List<CourseCardJpql> getAllCourseByTopicId(@Param("topicId") int topicId, Pageable pageable);
+
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "WHERE sc.id = :subCategoryId")
+    List<CourseCardJpql> getAllCourseBySubCategoryId(@Param("subCategoryId") int subCategoryId, Pageable pageable);
+
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "JOIN sc.category ca\n" +
+            "WHERE ca.id = :categoryId")
+    List<CourseCardJpql> getAllCourseByCategoryId(@Param("categoryId") int categoryId, Pageable pageable);
 }
