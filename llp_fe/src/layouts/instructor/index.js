@@ -14,6 +14,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled, useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import { AccountCircle } from '@mui/icons-material';
+import { PATH_PAGES } from '@/routes/paths';
 // import styles from './layout-instructor.css'
 //----------------------------------------------------------------------
 const Header = dynamic(() => import('./Header'), { ssr: false });
@@ -96,9 +97,9 @@ const Drawer1 = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })
 const CustomCourseIcon = () => {
   return (
     <svg width="30" height="30" viewBox="0 0 70 66" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 52V9C4 6.23858 6.23858 4 9 4H61C63.7614 4 66 6.23858 66 9V52C66 54.7614 63.7614 57 61 57H9C6.23858 57 4 54.7614 4 52Z" stroke="black" stroke-width="7" />
+      <path d="M4 52V9C4 6.23858 6.23858 4 9 4H61C63.7614 4 66 6.23858 66 9V52C66 54.7614 63.7614 57 61 57H9C6.23858 57 4 54.7614 4 52Z" stroke="black" strokeWidth="7" />
       <path d="M49.9999 31.0001L27.5007 43.991L27.5001 18.0102L49.9999 31.0001Z" fill="black" />
-      <path d="M20 63L50 63" stroke="black" stroke-width="5" />
+      <path d="M20 63L50 63" stroke="black" strokeWidth="5" />
     </svg>
 
   );
@@ -130,11 +131,11 @@ const CustomPerforIcon = () => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="_x32_" width="30px" height="30px" viewBox="0 0 512 512" >
       <g>
-        <rect x="56" y="317.484" class="st0" width="80" height="146.516" />
-        <rect x="176" y="237.484" class="st0" width="80" height="226.516" />
-        <rect x="296" y="141.484" class="st0" width="80" height="322.516" />
-        <rect x="416" y="45.484" class="st0" width="80" height="418.516" />
-        <polygon class="st0" points="16,496 16,0 0,0 0,496 0,512 16,512 512,512 512,496  " />
+        <rect x="56" y="317.484" className="st0" width="80" height="146.516" />
+        <rect x="176" y="237.484" className="st0" width="80" height="226.516" />
+        <rect x="296" y="141.484" className="st0" width="80" height="322.516" />
+        <rect x="416" y="45.484" className="st0" width="80" height="418.516" />
+        <polygon className="st0" points="16,496 16,0 0,0 0,496 0,512 16,512 512,512 512,496  " />
       </g>
     </svg>
   );
@@ -160,10 +161,9 @@ export default function InstructorMainLayout({ children }) {
     }
   ]
   const theme = useTheme();
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(item[0].value)
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -173,13 +173,18 @@ export default function InstructorMainLayout({ children }) {
   };
   const handleChangeValue = (item) => {
     setValue(item)
+    if (item === 'course') {
+      push(`${PATH_PAGES.instructor.course.root}`)
+    } else if (item === 'performance') {
+      push(`${PATH_PAGES.instructor.performance.root}`)
+    } else if (item === 'communication') {
+      push(`${PATH_PAGES.instructor.communication.root}`)
+    }
   }
 
 
   const isHome = pathname === '/page/instructor';
 
-
-  console.log(value);
 
   return (
     <Box>
@@ -214,17 +219,16 @@ export default function InstructorMainLayout({ children }) {
               justifyContent="end"
               alignItems="center"
               spacing={3}
+              sx={{ marginLeft: '80%' }}
             >
               <Button href="#" sx={{ color: 'black', fontSize: '13px' }} >
                 Student
               </Button>
               <Tooltip title="Open settings">
                 <IconButton sx={{ p: 0 }} color='black'>
-                  <Avatar alt="Avatar" src="../../../public/image/homepage/avatar-icon.png" />
+                  <Avatar alt="Avatar" src="/image/homepage/avatar-icon.png" />
                 </IconButton>
               </Tooltip>
-
-
             </Stack>
           </Toolbar>
         </AppBar1>
@@ -237,8 +241,8 @@ export default function InstructorMainLayout({ children }) {
           <Divider />
           <List spacing={3}>
             {item?.map((text, index) => (
-              <Stack justifyContent="flex-start" key={text} disablePadding sx={{ display: 'block', margin: '20px 0 20px 0' }}>
-                <div style={{ width: '3px', height: '50px', background: '#F9B03C' }}></div>
+              <Stack justifyContent="flex-start" key={index} sx={{ display: 'block', margin: '20px 0 20px 0' }}>
+                {/* <div style={{ width: '3px', height: '50px', background: '#F9B03C' }}></div> */}
                 <Button
                   sx={{
                     minHeight: 48,
@@ -263,9 +267,7 @@ export default function InstructorMainLayout({ children }) {
           </List>
 
         </Drawer1>
-
         {children}
-
       </Box>
 
       {/* <Footer /> */}

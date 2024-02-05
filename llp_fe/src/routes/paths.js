@@ -39,111 +39,21 @@ export const PATH_PAGES = {
     account: path(ROOTS_PAGE, "/user/account"),
     instructor: {
         root: path(ROOTS_PAGE, '/instructor'),
-    },
-    onlinetest: {
-        root: path(ROOTS_PAGE, '/onlinetest'),
-        ielttest: {
-            root: path(ROOTS_PAGE, '/onlinetest/ielttest'),
-
-            reading: {
-                root: path(ROOTS_PAGE, '/onlinetest/ielttest/reading'),
-                cambridge: {
-                    root: path(ROOTS_PAGE, '/onlinetest/ielttest/reading/cambridge'),
-                    passage: {
-                        root: path(ROOTS_PAGE, '/onlinetest/ielttest/reading/cambridge'),
-                        // new: path(ROOTS_DASHBOARD, '/course/reading/cambridge/passage/new'),
-                        // edit: path(ROOTS_DASHBOARD, `/course/reading/cambridge/passage/edit`),
-                    },
-                    dofulltest: {
-                        root: path(ROOTS_PAGE, '/onlinetest/ielttest/reading/cambridge/dofulltest'),
-                        result: path(ROOTS_PAGE, '/onlinetest/ielttest/reading/cambridge/dofulltest/result')
-                    }
-                    // vocabulary: {
-                    //     root: path(ROOTS_DASHBOARD, '/course/reading/cambridge/vocabulary'),
-                    //     new: path(ROOTS_DASHBOARD, '/course/reading/cambridge/vocabulary/new'),
-                    //     edit: path(ROOTS_DASHBOARD, `/course/reading/cambridge/vocabulary/edit`),
-                    // }
-                },
-            },
-
-            listening: {
-                root: path(ROOTS_PAGE, '/onlinetest/ielttest/listening'),
-                cambridge: {
-                    root: path(ROOTS_PAGE, '/onlinetest/ielttest/listening/cambridge'),
-                    passage: {
-                        root: path(ROOTS_PAGE, '/onlinetest/ielttest/listening/cambridge'),
-                        // new: path(ROOTS_DASHBOARD, '/course/reading/cambridge/passage/new'),
-                        // edit: path(ROOTS_DASHBOARD, `/course/reading/cambridge/passage/edit`),
-                    },
-                    dofulltest: {
-                        root: path(ROOTS_PAGE, '/onlinetest/ielttest/listening/cambridge/dofulltest'),
-                        result: path(ROOTS_PAGE, '/onlinetest/ielttest/listening/cambridge/dofulltest/result')
-                    }
-                    // vocabulary: {
-                    //     root: path(ROOTS_DASHBOARD, '/course/reading/cambridge/vocabulary'),
-                    //     new: path(ROOTS_DASHBOARD, '/course/reading/cambridge/vocabulary/new'),
-                    //     edit: path(ROOTS_DASHBOARD, `/course/reading/cambridge/vocabulary/edit`),
-                    // }
-                },
-            },
-
-            result: {
-                root: path(ROOTS_PAGE, '/onlinetest/ielttest/result'),
-            }
+        course: {
+            root: path(ROOTS_PAGE, '/instructor/course'),
+            new: path(ROOTS_PAGE, '/instructor/course/create'),
+            stepNew:path(ROOTS_PAGE,'/instructor/course/create/steps')
         },
-        toeic: {
-            root: path(ROOTS_PAGE, '/onlinetest/testtoeic'),
-
-            reading: {
-                root: path(ROOTS_PAGE, '/onlinetest/testtoeic/reading'),
-                ets: {
-                    root: path(ROOTS_PAGE, '/onlinetest/testtoeic/reading/ets'),
-                    test: {
-                        root: path(ROOTS_PAGE, '/onlinetest/testtoeic/reading/ets/test'),
-                        dofulltest: {
-                            root: path(ROOTS_PAGE, '/onlinetest/testtoeic/reading/ets/test/dofulltest'),
-                            result: path(ROOTS_PAGE, '/onlinetest/testtoeic/reading/ets/test/dofulltest/result')
-                        }
-                    }
-                },
-            },
-
-            listening: {
-                root: path(ROOTS_PAGE, '/onlinetest/testtoeic/listening'),
-                ets: {
-                    root: path(ROOTS_PAGE, '/onlinetest/testtoeic/listening/ets'),
-                    test: {
-                        root: path(ROOTS_PAGE, '/onlinetest/testtoeic/listening/ets/test'),
-                        dofulltest: {
-                            root: path(ROOTS_PAGE, '/onlinetest/testtoeic/listening/ets/test/dofulltest'),
-                            result: path(ROOTS_PAGE, '/onlinetest/testtoeic/listening/ets/test/dofulltest/result')
-                        }
-                    }
-                },
-            },
+        communication: {
+            root: path(ROOTS_PAGE, '/communication'),
         },
-        grammar: {
-            root: path(ROOTS_PAGE, '/onlinetest/testgrammar'),
-            test: {
-                root: path(ROOTS_PAGE, '/onlinetest/testgrammar/test'),
-                dofulltest: {
-                    root: path(ROOTS_PAGE, '/onlinetest/testgrammar/test/dofulltest'),
-                    result: path(ROOTS_PAGE, '/onlinetest/testgrammar/test/dofulltest/result'),
-                }
-            }
-        },
-
-    },
-    toeic: {
-        root: path(ROOTS_PAGE, '/toeic'),
-        listening: {
-            root: path(ROOTS_PAGE, '/toeic/listening')
+        performance: {
+            root: path(ROOTS_PAGE, '/performance'),
         }
     },
 
-    grammar: {
-        root: path(ROOTS_PAGE, '/grammar'),
-    }
+
+
 }
 
 export const PATH_DASHBOARD = {

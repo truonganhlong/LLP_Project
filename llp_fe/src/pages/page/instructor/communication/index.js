@@ -1,5 +1,7 @@
 
+import InstructorMainLayout from '@/layouts/instructor';
 import { PATH_PAGES } from '@/routes/paths';
+import { Box, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 // import { PATH_AUTH, PATH_DASHBOARD } from 'src/routes/paths';
@@ -7,17 +9,22 @@ import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
-// HomePage.getLayout = (page) => <MainLayout> {page} </MainLayout>;
+InstructorCommunication.getLayout = (page) => <InstructorMainLayout> {page} </InstructorMainLayout>;
 
 // ----------------------------------------------------------------------
 
-export default function HomePage() {
+export default function InstructorCommunication({value}) {
 
     const { push } = useRouter()
+
     return (
         <>
-        <a href={`${PATH_PAGES.instructor.course.root}`}>Instructor</a>
-            
+            <Box>
+                <Typography sx={{ fontSize: '36px', fontFamily: 'Nunito' }} variant='h5'>
+                Communication
+                </Typography>
+            </Box>
+
         </>
     );
 }

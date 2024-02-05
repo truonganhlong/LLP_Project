@@ -9,18 +9,20 @@ import { useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
-Instructor.getLayout = (page) => <InstructorMainLayout> {page} </InstructorMainLayout>;
+InstructorPerformance.getLayout = (page) => <InstructorMainLayout> {page} </InstructorMainLayout>;
 
 // ----------------------------------------------------------------------
 
-export default function Instructor() {
+export default function InstructorPerformance({value}) {
 
     const { push } = useRouter()
 
     return (
         <>
-            <Box direction="row" sx={{ marginLeft: '100px', marginTop: '60px' }}>
-                <Typography sx={{ fontSize: '36px', fontFamily: 'Nunito' }} variant='h5'> Course</Typography>
+            <Box>
+                <Typography sx={{ fontSize: '36px', fontFamily: 'Nunito' }} variant='h5'>
+                Performance
+                </Typography>
             </Box>
 
         </>
