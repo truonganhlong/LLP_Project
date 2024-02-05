@@ -114,4 +114,15 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Api 65: get from category to topic in homepage filter")
+    @RequestMapping(value = "/allCategoryToTopic", method = RequestMethod.GET)
+    public ResponseEntity<?> getCategoryToTopic(){
+        try {
+            var data = categoryService.getCategoryToTopic();
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

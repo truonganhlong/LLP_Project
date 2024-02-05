@@ -174,7 +174,7 @@ public class IntroServiceImpl implements IntroService {
         Path filePath = Paths.get(root, directory, imageLink.getOriginalFilename());
         try {
             imageLink.transferTo(new File(String.valueOf(filePath)));
-            intro.setImageLink(directory + imageLink.getOriginalFilename());
+            intro.setImageLink(imageLink.getOriginalFilename());
             introRepository.save(intro);
         } catch (IOException e) {
             throw new NotFoundException("Not found file");

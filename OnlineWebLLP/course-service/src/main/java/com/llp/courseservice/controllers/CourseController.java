@@ -42,7 +42,7 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 60: get all prominent course cards in Featured courses after select a sub category")
-    @RequestMapping(value = "/allProminentCourseBySubCategoryId/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/allProminentCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourseBySubCategoryId(@PathVariable int subCategoryId,
                                                                   @RequestParam(defaultValue = "0") Integer pageNo,
                                                                   @RequestParam(defaultValue = "1") Integer pageSize)
@@ -56,7 +56,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 61: get all prominent course cards in Featured courses after select a category")
-    @RequestMapping(value = "/allProminentCourseByCategoryId/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/allProminentCourseByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourseByCategoryId(@PathVariable int categoryId,
                                                                   @RequestParam(defaultValue = "0") Integer pageNo,
                                                                   @RequestParam(defaultValue = "1") Integer pageSize)
@@ -70,7 +70,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 62: get all course cards inside topic page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseByTopicId/{topicId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/allCourseByTopic/{topicId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseByTopicId(@PathVariable int topicId,
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "15") Integer pageSize,
@@ -86,7 +86,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 63: get all course cards inside sub category page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseBySubCategoryId/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/allCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseBySubCategoryId(@PathVariable int subCategoryId,
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "15") Integer pageSize,
@@ -102,7 +102,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 64: get all course cards inside category page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseByCategoryId/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/allCourseByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseByCategoryId(@PathVariable int categoryId,
                                                       @RequestParam(defaultValue = "0") Integer pageNo,
                                                       @RequestParam(defaultValue = "15") Integer pageSize,

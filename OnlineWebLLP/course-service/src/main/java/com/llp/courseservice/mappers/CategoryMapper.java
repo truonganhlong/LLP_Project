@@ -2,6 +2,7 @@ package com.llp.courseservice.mappers;
 
 import com.llp.courseservice.dtos.Category.CategoryNameResponse;
 import com.llp.courseservice.dtos.Category.CategoryAdminResponse;
+import com.llp.courseservice.dtos.Category.CategoryToTopicResponse;
 import com.llp.courseservice.dtos.Category.CategoryUserResponse;
 import com.llp.courseservice.entities.Category;
 import com.llp.courseservice.repositories.CategoryRepository;
@@ -27,6 +28,12 @@ public class CategoryMapper {
                 .id(category.getId())
                 .name(category.getName())
                 .imageLink(category.getImageLink())
+                .build();
+    }
+    public static CategoryToTopicResponse convertToCtTResponse(CategoryRepository.CategoryByName category){
+        return CategoryToTopicResponse.builder()
+                .id(category.getId())
+                .name(category.getName())
                 .build();
     }
 
