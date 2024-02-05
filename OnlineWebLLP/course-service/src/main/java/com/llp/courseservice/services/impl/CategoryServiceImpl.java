@@ -1,9 +1,15 @@
 package com.llp.courseservice.services.impl;
 
 import com.llp.courseservice.dtos.Category.*;
+import com.llp.courseservice.dtos.SubCategory.SubCategoryToTopicResponse;
+import com.llp.courseservice.dtos.Topic.TopicNameResponse;
 import com.llp.courseservice.entities.Category;
 import com.llp.courseservice.mappers.CategoryMapper;
+import com.llp.courseservice.mappers.SubCategoryMapper;
+import com.llp.courseservice.mappers.TopicMapper;
 import com.llp.courseservice.repositories.CategoryRepository;
+import com.llp.courseservice.repositories.SubCategoryRepository;
+import com.llp.courseservice.repositories.TopicRepository;
 import com.llp.courseservice.services.CategoryService;
 import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
@@ -27,6 +33,8 @@ public class CategoryServiceImpl implements CategoryService {
     private static final String root = System.getProperty("user.dir") + "/shared-project/src/main/resources/static/";
     private static final String directory = "images/category/";
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final TopicRepository topicRepository;
     @Override
     public List<CategoryAdminResponse> getAll() {
         try {
@@ -144,11 +152,32 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    @Override
+    public List<CategoryToTopicResponse> getCategoryToTopic() {
+        try {
+            List<CategoryRepository.CategoryByName> categories = categoryRepository.getNameByUser();
+            var result =  categories.stream().map(CategoryMapper::convertToCtTResponse).collect(Collectors.toList());
+            for (var category:result) {
+                List<SubCategoryRepository.SubCategoryByName> subCategoriesList = subCategoryRepository.getByUserFilterByCategory(category.getId().intValue());
+                List<SubCategoryToTopicResponse> subCategories = subCategoriesList.stream().map(SubCategoryMapper::convertToSctTResponse).collect(Collectors.toList());
+                for (var subCategory:subCategories) {
+                    List<TopicRepository.TopicByName> topicsList = topicRepository.getByUserFilterBySubCategory(subCategory.getId().intValue());
+                    List<TopicNameResponse> topics = topicsList.stream().map(TopicMapper::convertToUserResponse).collect(Collectors.toList());
+                    subCategory.setTopics(topics);
+                }
+                category.setSubCategories(subCategories);
+            }
+            return result;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
     private void insertImage(Category category, MultipartFile imageLink) {
         Path filePath = Paths.get(root, directory, imageLink.getOriginalFilename());
         try {
             imageLink.transferTo(new File(String.valueOf(filePath)));
-            category.setImageLink(directory + imageLink.getOriginalFilename());
+            category.setImageLink(imageLink.getOriginalFilename());
             categoryRepository.save(category);
         } catch (IOException e) {
             throw new NotFoundException("Not found file");

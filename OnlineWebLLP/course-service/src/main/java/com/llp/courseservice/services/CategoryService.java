@@ -13,4 +13,5 @@ public interface CategoryService {
     void update(int id, CategoryUpdateRequest request);
     void updateStatus(int id);
     void delete(int id);
+    List<CategoryToTopicResponse> getCategoryToTopic();
 }

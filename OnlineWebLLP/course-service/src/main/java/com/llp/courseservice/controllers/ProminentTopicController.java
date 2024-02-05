@@ -40,7 +40,7 @@ public class ProminentTopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @Operation(summary = "Api 34: get prominent course by id")
+    @Operation(summary = "Api 34: get prominent topic by id")
     @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
@@ -52,7 +52,7 @@ public class ProminentTopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @Operation(summary = "Api 35: create prominent course")
+    @Operation(summary = "Api 35: create prominent topic")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody ProminentTopicCreateRequest request){
         try {
@@ -62,7 +62,7 @@ public class ProminentTopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @Operation(summary = "Api 36: update prominent course")
+    @Operation(summary = "Api 36: update prominent topic")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody ProminentTopicUpdateRequest request){
         try {
@@ -76,7 +76,7 @@ public class ProminentTopicController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @Operation(summary = "Api 37: delete prominent course")
+    @Operation(summary = "Api 37: delete prominent topic")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
