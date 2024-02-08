@@ -1,6 +1,8 @@
 package com.llp.courseservice.controllers;
 
+import com.llp.courseservice.dtos.Course.CourseCreateRequest;
 import com.llp.courseservice.dtos.Course.CourseFilter;
+import com.llp.courseservice.dtos.Section.SectionCreateRequest;
 import com.llp.courseservice.services.CourseService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
@@ -8,8 +10,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -36,6 +41,19 @@ public class CourseController {
     {
         try {
             var data = courseService.getAllProminentCourse(pageNo, pageSize);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    @Operation(summary = "Api 66: get all prominent course cards in Featured courses after select a topic")
+    @RequestMapping(value = "/allProminentCourseByTopic/{topicId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllProminentCourseByTopicId(@PathVariable int topicId,
+                                                               @RequestParam(defaultValue = "0") Integer pageNo,
+                                                               @RequestParam(defaultValue = "1") Integer pageSize)
+    {
+        try {
+            var data = courseService.getAllProminentCourseByTopicId(topicId, pageNo, pageSize);
             return ResponseEntity.ok(data);
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -116,4 +134,72 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Api 67: update course to prominent")
+    @RequestMapping(value = "/prominent/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateToProminent(@PathVariable String id){
+        try {
+            courseService.updateToProminent(id);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Update successfully");
+        }  catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 68: update status course")
+    @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateStatus(@PathVariable String id){
+        try {
+            courseService.updateStatus(id);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Update successfully");
+        }  catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 69: delete course")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> delete(@PathVariable String id){
+        try {
+            courseService.delete(id);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Delete successfully");
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 70: search course by name", description = "support paging, sorting and filtering")
+    @RequestMapping(value = "/searchCourseByName/{keyword}", method = RequestMethod.GET)
+    public ResponseEntity<?> searchCourseByName(@PathVariable String keyword,
+                                                      @RequestParam(defaultValue = "0") Integer pageNo,
+                                                      @RequestParam(defaultValue = "15") Integer pageSize,
+                                                      @RequestParam(defaultValue = "ratingNum") String sortBy,
+                                                      @RequestBody CourseFilter filter)
+    {
+        try {
+            var data = courseService.searchCourseByName(keyword, pageNo, pageSize, sortBy, filter);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    @Operation(summary = "Api 71: create course")
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> create(@RequestBody CourseCreateRequest request){
+        try {
+            courseService.create(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Create successfully");
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

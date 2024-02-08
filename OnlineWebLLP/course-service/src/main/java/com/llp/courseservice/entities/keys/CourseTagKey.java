@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.io.Serializable;
+import java.sql.Types;
 import java.util.UUID;
 
 @Embeddable
@@ -17,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseTagKey implements Serializable {
-    @Column(name = "courseId")
+    @Column(name = "courseId", columnDefinition = "VARCHAR(50)")
     private UUID courseId;
     @Column(name = "tagId")
     private Long tagId;

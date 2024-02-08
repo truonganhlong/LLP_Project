@@ -5,14 +5,14 @@ import com.llp.courseservice.dtos.Course.CourseCardResponse;
 import com.llp.courseservice.dtos.Course.CourseOverviewResponse;
 import com.llp.courseservice.repositories.CourseRepository;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+
+import static com.llp.sharedproject.sharedFunc.SharedFunction.convertStringToList;
 
 public class CourseMapper {
-    public static CourseOverviewResponse convertToOverviewResponse(CourseRepository.CourseOverview courseOverview){
+    public static CourseOverviewResponse convertToOverviewResponse(CourseRepository.CourseOverview courseOverview) throws IOException {
         // return the month by word
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         String formattedDateTime = courseOverview.getUpdatedAt().format(formatter);
@@ -25,8 +25,8 @@ public class CourseMapper {
             duration = String.valueOf(courseOverview.getDuration()/60) + " total hours";
         }
         //convert string target to List<String> and get only 3 elements
-        String[] elements = courseOverview.getTarget().split(",");
-        List<String> targetList = new ArrayList<>(Arrays.asList(elements));
+
+        List<String> targetList = convertStringToList(courseOverview.getTarget());;
         targetList = targetList.subList(0,3);
         return CourseOverviewResponse.builder()
                 .id(courseOverview.getId())
@@ -62,4 +62,6 @@ public class CourseMapper {
                 .price(courseCard.getPrice())
                 .build();
     }
+
+
 }

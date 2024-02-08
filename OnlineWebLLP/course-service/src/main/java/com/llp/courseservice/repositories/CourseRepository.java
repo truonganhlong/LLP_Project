@@ -81,7 +81,7 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "JOIN c.courseTopics ct\n" +
             "JOIN ct.topic t\n" +
             "JOIN t.subCategory sc\n" +
-            "WHERE t.id = :topicId")
+            "WHERE t.id = :topicId AND c.status = true")
     List<CourseCardJpql> getAllCourseByTopicId(@Param("topicId") int topicId, Pageable pageable);
 
     @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
@@ -91,7 +91,7 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "JOIN c.courseTopics ct\n" +
             "JOIN ct.topic t\n" +
             "JOIN t.subCategory sc\n" +
-            "WHERE sc.id = :subCategoryId")
+            "WHERE sc.id = :subCategoryId AND c.status = true")
     List<CourseCardJpql> getAllCourseBySubCategoryId(@Param("subCategoryId") int subCategoryId, Pageable pageable);
 
     @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
@@ -102,6 +102,16 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "JOIN ct.topic t\n" +
             "JOIN t.subCategory sc\n" +
             "JOIN sc.category ca\n" +
-            "WHERE ca.id = :categoryId")
+            "WHERE ca.id = :categoryId AND c.status = true")
     List<CourseCardJpql> getAllCourseByCategoryId(@Param("categoryId") int categoryId, Pageable pageable);
+
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "WHERE c.name LIKE CONCAT('%', :keyword, '%') AND c.status = true")
+    List<CourseCardJpql> searchCourseByName(@Param("keyword") String keyword, Pageable pageable);
 }

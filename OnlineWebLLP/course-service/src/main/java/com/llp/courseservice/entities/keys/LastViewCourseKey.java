@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.io.Serializable;
+import java.sql.Types;
 import java.util.UUID;
 
 @Embeddable
@@ -18,6 +20,6 @@ import java.util.UUID;
 public class LastViewCourseKey implements Serializable {
     @Column(name = "userId")
     private Long userId;
-    @Column(name = "courseId")
+    @Column(name = "courseId", columnDefinition = "VARCHAR(50)")
     private UUID courseId;
 }

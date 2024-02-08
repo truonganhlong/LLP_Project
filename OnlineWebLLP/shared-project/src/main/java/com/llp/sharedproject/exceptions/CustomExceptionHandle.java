@@ -38,4 +38,10 @@ public class CustomExceptionHandle {
     public ErrorResponse handlerUnauthorizedException(UnauthorizedException exception, WebRequest request){
         return new ErrorResponse(HttpStatus.UNAUTHORIZED, exception.getMessage());
     }
+
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlerConflictException(ConflictException exception, WebRequest request){
+        return new ErrorResponse(HttpStatus.CONFLICT, exception.getMessage());
+    }
 }
