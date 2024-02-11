@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.llp.sharedproject.sharedFunc.SharedFunction.convertStringToList;
 
@@ -21,20 +22,16 @@ import static com.llp.sharedproject.sharedFunc.SharedFunction.convertStringToLis
 public class SectionServiceImpl implements SectionService {
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
-    private final LectureService lectureService;
 
     @Override
-    public void create(SectionCreateRequest request, Course course) {
+    public int create(SectionCreateRequest request, String courseId) {
         try {
             Section section = Section.builder()
                     .name(request.getName())
-                    .course(course)
+                    .course(courseRepository.getById(UUID.fromString(courseId)))
                     .build();
             sectionRepository.save(section);
-//            List<LectureCreateRequest> lectureCreateRequests = request.getLectureRequest();
-//            for(LectureCreateRequest lectureCreateRequest : lectureCreateRequests){
-//                lectureService.create(lectureCreateRequest, section);
-//            }
+            return section.getId().intValue();
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){

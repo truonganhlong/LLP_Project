@@ -6,5 +6,5 @@ import com.llp.courseservice.entities.Course;
 import java.util.List;
 
 public interface SectionService {
-    void create(SectionCreateRequest request, Course course);
+    int create(SectionCreateRequest request, String courseId);
 }

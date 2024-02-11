@@ -5,18 +5,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
+@Component
 public class JwtService {
-    //private static final String SECRET_KEY = "78c58049bae3db940b7c45f97f97ded3";
+    private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -27,7 +30,11 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+        //return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", getRolesFromUserDetails(userDetails));
+
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map <String, Object> extraClaims, UserDetails userDetails){
@@ -64,8 +71,10 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        byte[] keyBytes = Keys.secretKeyFor(signatureAlgorithm).getEncoded();
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    private Collection<? extends GrantedAuthority> getRolesFromUserDetails(UserDetails userDetails) {
+        return userDetails.getAuthorities();
     }
 }

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
     private final TagService tagService;
     @Operation(summary = "Api 46: get all tag in admin side")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
             var data = tagService.getAll();
@@ -29,7 +29,7 @@ public class TagController {
         }
     }
     @Operation(summary = "Api 47: get tag by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = tagService.getById(id);
@@ -41,7 +41,7 @@ public class TagController {
         }
     }
     @Operation(summary = "Api 48: create tag")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody TagCreateRequest request){
         try {
             tagService.create(request);
@@ -51,7 +51,7 @@ public class TagController {
         }
     }
     @Operation(summary = "Api 49: update tag")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody TagUpdateRequest request){
         try {
             tagService.update(id, request);
@@ -65,7 +65,7 @@ public class TagController {
         }
     }
     @Operation(summary = "Api 50: delete tag")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             tagService.delete(id);

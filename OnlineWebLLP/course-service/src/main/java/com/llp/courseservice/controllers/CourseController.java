@@ -23,7 +23,7 @@ import java.util.List;
 public class CourseController {
     private final CourseService courseService;
     @Operation(summary = "Api 17: get course's overview which is the course's data when user hover in course")
-    @RequestMapping(value = "/courseOverviewById/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/courseOverviewById/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getCourseOverview(@PathVariable String id){
         try {
             var data = courseService.getCourseOverview(id);
@@ -35,7 +35,7 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 59: get all prominent course cards in Learners are viewing in homepage")
-    @RequestMapping(value = "/allProminentCourse", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allProminentCourse", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourse(@RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "5") Integer pageSize)
     {
@@ -47,7 +47,7 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 66: get all prominent course cards in Featured courses after select a topic")
-    @RequestMapping(value = "/allProminentCourseByTopic/{topicId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allProminentCourseByTopic/{topicId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourseByTopicId(@PathVariable int topicId,
                                                                @RequestParam(defaultValue = "0") Integer pageNo,
                                                                @RequestParam(defaultValue = "1") Integer pageSize)
@@ -60,7 +60,7 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 60: get all prominent course cards in Featured courses after select a sub category")
-    @RequestMapping(value = "/allProminentCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allProminentCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourseBySubCategoryId(@PathVariable int subCategoryId,
                                                                   @RequestParam(defaultValue = "0") Integer pageNo,
                                                                   @RequestParam(defaultValue = "1") Integer pageSize)
@@ -74,7 +74,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 61: get all prominent course cards in Featured courses after select a category")
-    @RequestMapping(value = "/allProminentCourseByCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allProminentCourseByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllProminentCourseByCategoryId(@PathVariable int categoryId,
                                                                   @RequestParam(defaultValue = "0") Integer pageNo,
                                                                   @RequestParam(defaultValue = "1") Integer pageSize)
@@ -88,7 +88,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 62: get all course cards inside topic page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseByTopic/{topicId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allCourseByTopic/{topicId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseByTopicId(@PathVariable int topicId,
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "15") Integer pageSize,
@@ -104,7 +104,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 63: get all course cards inside sub category page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allCourseBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseBySubCategoryId(@PathVariable int subCategoryId,
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "15") Integer pageSize,
@@ -120,7 +120,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 64: get all course cards inside category page", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/allCourseByCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allCourseByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCourseByCategoryId(@PathVariable int categoryId,
                                                       @RequestParam(defaultValue = "0") Integer pageNo,
                                                       @RequestParam(defaultValue = "15") Integer pageSize,
@@ -136,7 +136,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 67: update course to prominent")
-    @RequestMapping(value = "/prominent/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/prominent/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateToProminent(@PathVariable String id){
         try {
             courseService.updateToProminent(id);
@@ -149,7 +149,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 68: update status course")
-    @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable String id){
         try {
             courseService.updateStatus(id);
@@ -162,7 +162,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 69: delete course")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable String id){
         try {
             courseService.delete(id);
@@ -175,7 +175,7 @@ public class CourseController {
     }
 
     @Operation(summary = "Api 70: search course by name", description = "support paging, sorting and filtering")
-    @RequestMapping(value = "/searchCourseByName/{keyword}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/searchCourseByName/{keyword}", method = RequestMethod.GET)
     public ResponseEntity<?> searchCourseByName(@PathVariable String keyword,
                                                       @RequestParam(defaultValue = "0") Integer pageNo,
                                                       @RequestParam(defaultValue = "15") Integer pageSize,
@@ -190,11 +190,11 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 71: create course")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@RequestBody CourseCreateRequest request){
         try {
-            courseService.create(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Create successfully");
+            var data = courseService.create(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(data);
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (InternalServerException e){

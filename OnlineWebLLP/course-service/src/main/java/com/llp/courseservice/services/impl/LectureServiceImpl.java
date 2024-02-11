@@ -22,11 +22,10 @@ import java.util.Objects;
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
     private final SectionRepository sectionRepository;
-    //private final CourseService courseService;
+    private final CourseService courseService;
     @Override
-    public void create(LectureCreateRequest request, Section section) {
+    public void create(LectureCreateRequest request, int sectionId) {
         try {
-            int duration = 0;
             Lecture lecture = Lecture.builder()
                     .name(request.getName())
                     .goal(request.getGoal())
@@ -37,11 +36,10 @@ public class LectureServiceImpl implements LectureService {
                     .createdBy(request.getCreatedBy())
                     .isFree(request.isFree())
                     .status(true)
-                    .section(section)
+                    .section(sectionRepository.getById(sectionId))
                     .build();
             lectureRepository.save(lecture);
-            //duration += request.getDuration();
-            //courseService.updateDuration(String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()), duration);
+            courseService.updateDuration(String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()), lecture.getDuration());
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){

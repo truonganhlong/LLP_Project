@@ -43,6 +43,4 @@ public class CourseCreateRequest {
     private double price;
     @JsonProperty(required = true)
     private Long createdBy;
-    @JsonProperty(required = true)
-    private List<SectionCreateRequest> sectionRequest;
 }

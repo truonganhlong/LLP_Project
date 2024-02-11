@@ -2,15 +2,18 @@ package com.llp.userservice.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @AllArgsConstructor
@@ -37,7 +40,7 @@ public class User implements UserDetails {
     private boolean verified;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate participateDay;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserRole> userRoles;
     @OneToMany(mappedBy = "user")
     private List<UserNotification> userNotifications;
@@ -54,12 +57,21 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<RegisterInstructorForm> registerInstructorForms;
 
+    private void initializeUserRoles() {
+        if (userRoles == null) {
+            userRoles = new ArrayList<>(); // Or fetch it from the database if necessary
+        } else {
+            Hibernate.initialize(userRoles);
+        }
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        userRoles.forEach(userRole -> authorities.add(new SimpleGrantedAuthority(userRole.getRole().getName())));
-        userRoles.forEach(System.out::println);
-        return List.of(new SimpleGrantedAuthority(authorities.toString()));
+        initializeUserRoles();
+
+        return this.getUserRoles().stream()
+                .map(userRole -> new SimpleGrantedAuthority("ROLE_" + userRole.getRole().getName()))
+                .collect(Collectors.toList());
     }
 
     @Override

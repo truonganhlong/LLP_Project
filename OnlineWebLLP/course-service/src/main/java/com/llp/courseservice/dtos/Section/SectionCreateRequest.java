@@ -15,6 +15,4 @@ import java.util.List;
 public class SectionCreateRequest {
     @JsonProperty(required = true)
     private String name;
-//    @JsonProperty(required = true)
-//    private List<LectureCreateRequest> lectureRequest;
 }

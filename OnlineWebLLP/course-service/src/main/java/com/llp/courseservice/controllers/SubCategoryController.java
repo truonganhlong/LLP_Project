@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class SubCategoryController {
     private final SubCategoryService subCategoryService;
     @Operation(summary = "Api 38: get all sub category in admin side")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
             var data = subCategoryService.getAll();
@@ -29,7 +29,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 39: get all sub category filter by categoryId in admin side")
-    @RequestMapping(value = "/byAdminFilterByCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/byAdminFilterByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByAdminFilterByCategory(@PathVariable int categoryId){
         try {
             var data = subCategoryService.getByAdminFilterByCategory(categoryId);
@@ -39,7 +39,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 40: get all sub category filter by categoryId in categories filter")
-    @RequestMapping(value = "/byUserFilterByCategory/{categoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byUserFilterByCategory/{categoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByUserFilterByCategory(@PathVariable int categoryId){
         try {
             var data = subCategoryService.getByUserFilterByCategory(categoryId);
@@ -49,7 +49,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 41: get sub category by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = subCategoryService.getById(id);
@@ -61,7 +61,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 42: create sub category")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody SubCategoryCreateRequest request){
         try {
             subCategoryService.create(request);
@@ -72,7 +72,7 @@ public class SubCategoryController {
     }
 
     @Operation(summary = "Api 43: update sub category")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody SubCategoryUpdateRequest request){
         try {
             subCategoryService.update(id, request);
@@ -86,7 +86,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 44: update status of sub category. When status = true, user can see")
-    @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable int id){
         try {
             subCategoryService.updateStatus(id);
@@ -98,7 +98,7 @@ public class SubCategoryController {
         }
     }
     @Operation(summary = "Api 45: delete sub category")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             subCategoryService.delete(id);

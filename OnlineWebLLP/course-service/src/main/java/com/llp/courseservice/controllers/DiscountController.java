@@ -19,7 +19,7 @@ import java.util.UUID;
 public class DiscountController {
     private final DiscountService discountService;
     @Operation(summary = "Api 18: get discount of course by courseId")
-    @RequestMapping(value = "/byCourseId/{courseId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byCourseId/{courseId}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable String courseId){
         try {
             var data = discountService.getByCourseId(courseId);
@@ -31,7 +31,7 @@ public class DiscountController {
         }
     }
     @Operation(summary = "Api 19: create new discount for course", description = "Discount value is int (ex: 80 in 80%), startTime and endTime must solve in FE to greater than today")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/teacher", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody DiscountCreateRequest request){
         try {
             discountService.create(request);
@@ -41,7 +41,7 @@ public class DiscountController {
         }
     }
     @Operation(summary = "Api 20: delete course's discount by courseId")
-    @RequestMapping(value = "/delete/{courseId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/teacher/delete/{courseId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable String courseId){
         try {
             discountService.delete(courseId);
@@ -53,7 +53,7 @@ public class DiscountController {
         }
     }
     @Operation(summary = "Api 21: end the discount time", description = "when it pass to other day (datetime = 12 a.m), FE call this api to check if discount expired then this api auto delete the discount")
-    @RequestMapping(value = "/end", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/public/end", method = RequestMethod.DELETE)
     public ResponseEntity<?> end(){
         try {
             discountService.end();

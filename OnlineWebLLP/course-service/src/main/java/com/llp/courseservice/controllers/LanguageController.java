@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class LanguageController {
     private final LanguageService languageService;
     @Operation(summary = "Api 22: get all language")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
             var data = languageService.getAll();
@@ -29,7 +29,7 @@ public class LanguageController {
         }
     }
     @Operation(summary = "Api 23: get language by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = languageService.getById(id);
@@ -41,7 +41,7 @@ public class LanguageController {
         }
     }
     @Operation(summary = "Api 24: create language")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody LanguageCreateRequest request){
         try {
             languageService.create(request);
@@ -51,7 +51,7 @@ public class LanguageController {
         }
     }
     @Operation(summary = "Api 25: update language")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody LanguageUpdateRequest request){
         try {
             languageService.update(id, request);
@@ -65,7 +65,7 @@ public class LanguageController {
         }
     }
     @Operation(summary = "Api 26: delete language")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             languageService.delete(id);

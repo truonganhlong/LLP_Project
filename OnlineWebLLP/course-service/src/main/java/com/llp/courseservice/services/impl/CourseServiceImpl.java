@@ -41,12 +41,9 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TagRepository tagRepository;
     private final DiscountService discountService;
-    private final SectionService sectionService;
-    private final LectureService lectureService;
     private final LanguageRepository languageRepository;
     private final LevelRepository levelRepository;
     private final CourseTopicRepository courseTopicRepository;
-    private final TopicRepository topicRepository;
     @Override
     public CourseOverviewResponse getCourseOverview(String id) {
         try {
@@ -230,7 +227,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void create(CourseCreateRequest request) {
+    public String create(CourseCreateRequest request) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Course course = Course.builder()
@@ -253,15 +250,7 @@ public class CourseServiceImpl implements CourseService {
             for (var topicId: request.getTopic()) {
                 courseTopicRepository.create(String.valueOf(course.getId()), topicId);
             }
-            List<SectionCreateRequest> sectionCreateRequests = request.getSectionRequest();
-            for(SectionCreateRequest sectionCreateRequest: sectionCreateRequests){
-//                Section section = new Section();
-//                section.setName(sectionCreateRequest.getName());
-//                section.setCourse(course);
-//                sectionRepository.save(section);
-                sectionService.create(sectionCreateRequest, course);
-            }
-            //sectionService.create(request.getSectionRequest(), String.valueOf(course.getId()));
+            return String.valueOf(course.getId());
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){

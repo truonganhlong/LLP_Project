@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class IntroController {
     private final IntroService introService;
     @Operation(summary = "Api 1: get full intro in admin side")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
             var data = introService.getAll();
@@ -31,7 +31,7 @@ public class IntroController {
     }
 
     @Operation(summary = "Api 2: get intros filter by introMapId in admin side")
-    @RequestMapping(value = "/allByMapId/{introMapId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/allByMapId/{introMapId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllByIntroMapId(@PathVariable int introMapId){
         try {
             var data = introService.getAllByIntroMapId(introMapId);
@@ -43,7 +43,7 @@ public class IntroController {
         }
     }
     @Operation(summary = "Api 3: get intros filter by introMapId in user side")
-    @RequestMapping(value = "/allByMapIdByUser/{introMapId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/allByMapIdByUser/{introMapId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllByIntroMapIdByUser(@PathVariable int introMapId){
         try {
             var data = introService.getAllByIntroMapIdByUser(introMapId);
@@ -55,7 +55,7 @@ public class IntroController {
         }
     }
     @Operation(summary = "Api 4: get intro by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = introService.getById(id);
@@ -67,7 +67,7 @@ public class IntroController {
         }
     }
     @Operation(summary = "Api 5: create new intro")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/admin",method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@RequestBody IntroCreateRequest request){
         try {
             introService.create(request);
@@ -79,7 +79,7 @@ public class IntroController {
         }
     }
     @Operation(summary = "Api 6: update intro")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody IntroUpdateRequest request){
         try {
             introService.update(id, request);
@@ -93,7 +93,7 @@ public class IntroController {
         }
     }
     @Operation(summary = "Api 7: update intro's status, if status = true then user can see")
-    @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable int id){
         try {
             introService.updateStatus(id);
@@ -104,8 +104,8 @@ public class IntroController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-    @Operation(summary = "Api 8: delete intro intro")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @Operation(summary = "Api 8: delete intro")
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             introService.delete(id);

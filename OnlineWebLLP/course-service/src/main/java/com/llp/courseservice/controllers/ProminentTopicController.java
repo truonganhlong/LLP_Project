@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProminentTopicController {
     private final ProminentTopicService prominentTopicService;
     @Operation(summary = "Api 32: get all prominent topics in admin side")
-    @RequestMapping(value = "/getAllByAdmin", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/getAllByAdmin", method = RequestMethod.GET)
     public ResponseEntity<?> getAllByAdmin(){
         try {
             var data = prominentTopicService.getAllByAdmin();
@@ -29,7 +29,7 @@ public class ProminentTopicController {
         }
     }
     @Operation(summary = "Api 33: get all prominent topics in user side", description = "result also return all prominent course in that topic. courses are also pageable")
-    @RequestMapping(value = "/getAllByUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/getAllByUser", method = RequestMethod.GET)
     public ResponseEntity<?> getAllByUser(@RequestParam(defaultValue = "0") Integer pageNo,
                                           @RequestParam(defaultValue = "5") Integer pageSize)
     {
@@ -41,7 +41,7 @@ public class ProminentTopicController {
         }
     }
     @Operation(summary = "Api 34: get prominent topic by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = prominentTopicService.getById(id);
@@ -53,7 +53,7 @@ public class ProminentTopicController {
         }
     }
     @Operation(summary = "Api 35: create prominent topic")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/admin",method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody ProminentTopicCreateRequest request){
         try {
             prominentTopicService.create(request);
@@ -63,7 +63,7 @@ public class ProminentTopicController {
         }
     }
     @Operation(summary = "Api 36: update prominent topic")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody ProminentTopicUpdateRequest request){
         try {
             prominentTopicService.update(id, request);
@@ -77,7 +77,7 @@ public class ProminentTopicController {
         }
     }
     @Operation(summary = "Api 37: delete prominent topic")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             prominentTopicService.delete(id);

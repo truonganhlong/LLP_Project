@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class TopicController {
     private final TopicService topicService;
     @Operation(summary = "Api 51: get all topics in admin side")
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAll(){
         try {
             var data = topicService.getAll();
@@ -29,7 +29,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 52: get topics filter by subCategoryId in admin side")
-    @RequestMapping(value = "/byAdminFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/byAdminFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByAdminFilterBySubCategory(@PathVariable int subCategoryId){
         try {
             var data = topicService.getByAdminFilterBySubCategory(subCategoryId);
@@ -39,7 +39,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 53: get topics filter by subCategoryId in categories filter in homepage")
-    @RequestMapping(value = "/byUserFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byUserFilterBySubCategory/{subCategoryId}", method = RequestMethod.GET)
     public ResponseEntity<?> getByUserFilterBySubCategory(@PathVariable int subCategoryId){
         try {
             var data = topicService.getByUserFilterBySubCategory(subCategoryId);
@@ -49,7 +49,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 54: get topic by id")
-    @RequestMapping(value = "/byId/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/public/byId/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getById(@PathVariable int id){
         try {
             var data = topicService.getById(id);
@@ -61,7 +61,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 55: create topic")
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/admin", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestBody TopicCreateRequest request){
         try {
             topicService.create(request);
@@ -71,7 +71,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 56: update topic")
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable int id, @RequestBody TopicUpdateRequest request){
         try {
             topicService.update(id, request);
@@ -85,7 +85,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 57: update topic's status. when status = true, user can see")
-    @RequestMapping(value = "/status/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/admin/status/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(@PathVariable int id){
         try {
             topicService.updateStatus(id);
@@ -97,7 +97,7 @@ public class TopicController {
         }
     }
     @Operation(summary = "Api 58: delete topic")
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/admin/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> delete(@PathVariable int id){
         try {
             topicService.delete(id);
