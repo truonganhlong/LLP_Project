@@ -8,10 +8,7 @@ import com.llp.userservice.entities.Answer;
 import com.llp.userservice.entities.Question;
 import com.llp.userservice.entities.RegisterInstructorForm;
 import com.llp.userservice.mappers.RegisterInstructorMapper;
-import com.llp.userservice.repositories.AnswerRepository;
-import com.llp.userservice.repositories.QuestionRepository;
-import com.llp.userservice.repositories.RegisterInstructorFormRepository;
-import com.llp.userservice.repositories.UserRepository;
+import com.llp.userservice.repositories.*;
 import com.llp.userservice.services.RegisterInstructorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,7 @@ public class RegisterInstructorServiceImpl implements RegisterInstructorService 
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final RegisterInstructorFormRepository registerInstructorFormRepository;
-    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
     @Override
     public List<QuestionResponse> getAllQuestion() {
         try {
@@ -47,6 +44,7 @@ public class RegisterInstructorServiceImpl implements RegisterInstructorService 
             for (var request:requests) {
                 registerInstructorFormRepository.create(userId, request.getQuestionId(), request.getAnswerId());
             }
+            userRoleRepository.create(userId, 2);
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }

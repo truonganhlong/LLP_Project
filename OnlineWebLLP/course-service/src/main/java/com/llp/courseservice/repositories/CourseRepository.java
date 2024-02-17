@@ -114,4 +114,6 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "JOIN t.subCategory sc\n" +
             "WHERE c.name LIKE CONCAT('%', :keyword, '%') AND c.status = true")
     List<CourseCardJpql> searchCourseByName(@Param("keyword") String keyword, Pageable pageable);
+
+    List<Course> getByCreatedBy(int createdBy);
 }

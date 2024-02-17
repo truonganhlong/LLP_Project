@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
 @SpringBootApplication
@@ -31,7 +32,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 		type = SecuritySchemeType.HTTP,
 		in = SecuritySchemeIn.HEADER
 )
-
+@EnableFeignClients
 public class UserServiceApplication {
 
 	public static void main(String[] args) {

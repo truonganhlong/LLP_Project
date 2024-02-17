@@ -34,14 +34,15 @@ public class SecurityConfiguration{
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"};
+            "/swagger-ui.html",
+            "/api/user/user/public/**"
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(PERMIT_URL).permitAll()
-                        //.requestMatchers("/api/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )

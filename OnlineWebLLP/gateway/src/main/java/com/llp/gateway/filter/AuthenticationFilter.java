@@ -78,7 +78,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/section/public",
                 "/api/course/subCategory/public",
                 "/api/course/tag/public",
-                "/api/course/topic/public"
+                "/api/course/topic/public",
+                "/api/order/paymentMethod/public",
+                "/api/user/user/public"
         );
         private final List<String> ADMIN_API_PATHS = Arrays.asList(
                 "/api/common/intro/admin",
@@ -92,7 +94,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/section/admin",
                 "/api/course/subCategory/admin",
                 "/api/course/tag/admin",
-                "/api/course/topic/admin"
+                "/api/course/topic/admin",
+                "/api/order/paymentMethod/admin",
+                "/api/user/user/admin"
         );
         private final List<String> USER_API_PATHS = Arrays.asList(
                 "/api/common/intro/user",
@@ -106,7 +110,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/section/user",
                 "/api/course/subCategory/user",
                 "/api/course/tag/user",
-                "/api/course/topic/user"
+                "/api/course/topic/user",
+                "/api/order/paymentMethod/user",
+                "/api/user/user/user"
         );
         private final List<String> TEACHER_API_PATHS = Arrays.asList(
                 "/api/common/intro/teacher",
@@ -120,7 +126,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/section/teacher",
                 "/api/course/subCategory/teacher",
                 "/api/course/tag/teacher",
-                "/api/course/topic/teacher"
+                "/api/course/topic/teacher",
+                "/api/order/paymentMethod/teacher",
+                "/api/user/user/teacher"
         );
 
         public boolean isAuthenticationRequired(ServerHttpRequest request) {

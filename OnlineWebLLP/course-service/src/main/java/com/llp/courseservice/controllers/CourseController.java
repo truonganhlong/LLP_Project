@@ -2,7 +2,6 @@ package com.llp.courseservice.controllers;
 
 import com.llp.courseservice.dtos.Course.CourseCreateRequest;
 import com.llp.courseservice.dtos.Course.CourseFilter;
-import com.llp.courseservice.dtos.Section.SectionCreateRequest;
 import com.llp.courseservice.services.CourseService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
@@ -190,13 +189,24 @@ public class CourseController {
         }
     }
     @Operation(summary = "Api 71: create course")
-    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/teacher", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@RequestBody CourseCreateRequest request){
         try {
             var data = courseService.create(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(data);
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 85: get course of teacher")
+    @RequestMapping(value = "/public/getByTeacher/{createdBy}", method = RequestMethod.GET)
+    public ResponseEntity<?> getByTeacher(@PathVariable int createdBy){
+        try {
+            var data = courseService.getByTeacher(createdBy);
+            return ResponseEntity.ok(data);
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

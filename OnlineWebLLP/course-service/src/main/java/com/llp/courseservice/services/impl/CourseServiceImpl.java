@@ -1,18 +1,14 @@
 package com.llp.courseservice.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.llp.courseservice.clients.UserClient;
+import com.llp.courseservice.clients.dtos.InstructorResponse;
 import com.llp.courseservice.dtos.Course.*;
-import com.llp.courseservice.dtos.Section.SectionCreateRequest;
 import com.llp.courseservice.entities.Course;
-import com.llp.courseservice.entities.CourseTopic;
-import com.llp.courseservice.entities.Section;
-import com.llp.courseservice.entities.keys.CourseTopicKey;
 import com.llp.courseservice.mappers.CourseMapper;
 import com.llp.courseservice.repositories.*;
 import com.llp.courseservice.services.CourseService;
 import com.llp.courseservice.services.DiscountService;
-import com.llp.courseservice.services.LectureService;
-import com.llp.courseservice.services.SectionService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.sharedproject.sharedFunc.ReturnCourseFilter;
@@ -28,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -44,6 +41,7 @@ public class CourseServiceImpl implements CourseService {
     private final LanguageRepository languageRepository;
     private final LevelRepository levelRepository;
     private final CourseTopicRepository courseTopicRepository;
+    private final UserClient userClient;
     @Override
     public CourseOverviewResponse getCourseOverview(String id) {
         try {
@@ -68,8 +66,8 @@ public class CourseServiceImpl implements CourseService {
             List<CourseRepository.CourseCard> courseCards = courseRepository.getAllProminentCourse(paging);
             List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardResponse).collect(Collectors.toList());
             for (var courseCardResponse:courseCardResponses) {
-                //feign client user later
-                courseCardResponse.setInstructor(null);
+                InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                courseCardResponse.setInstructor(instructor.getFullname());
                 courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
             }
             return courseCardResponses;
@@ -85,8 +83,8 @@ public class CourseServiceImpl implements CourseService {
             List<CourseRepository.CourseCard> courseCards = courseRepository.getAllProminentCourseByTopicId(topicId, paging);
             List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardResponse).collect(Collectors.toList());
             for (var courseCardResponse:courseCardResponses) {
-                //feign client user later
-                courseCardResponse.setInstructor(null);
+                InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                courseCardResponse.setInstructor(instructor.getFullname());
                 courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
             }
             return courseCardResponses;
@@ -102,8 +100,8 @@ public class CourseServiceImpl implements CourseService {
             List<CourseRepository.CourseCard> courseCards = courseRepository.getAllProminentCourseBySubCategoryId(subCategoryId, paging);
             List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardResponse).collect(Collectors.toList());
             for (var courseCardResponse:courseCardResponses) {
-                //feign client user later
-                courseCardResponse.setInstructor(null);
+                InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                courseCardResponse.setInstructor(instructor.getFullname());
                 courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
             }
             return courseCardResponses;
@@ -119,8 +117,8 @@ public class CourseServiceImpl implements CourseService {
             List<CourseRepository.CourseCard> courseCards = courseRepository.getAllProminentCourseByCategoryId(categoryId, paging);
             List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardResponse).collect(Collectors.toList());
             for (var courseCardResponse:courseCardResponses) {
-                //feign client user later
-                courseCardResponse.setInstructor(null);
+                InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                courseCardResponse.setInstructor(instructor.getFullname());
                 courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
             }
             return courseCardResponses;
@@ -275,6 +273,23 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Override
+    public List<CourseTeacherResponse> getByTeacher(int createdBy) {
+        try {
+            List<Course> list = courseRepository.getByCreatedBy(createdBy);
+            List<CourseTeacherResponse> data = new ArrayList<>();
+            for (Course course : list) {
+                CourseTeacherResponse courseTeacherResponse = CourseMapper.convertToTeacherResponse(course);
+                courseTeacherResponse.setLevel(course.getLevel().getName());
+                courseTeacherResponse.setLanguage(course.getLanguage().getName());
+                data.add(courseTeacherResponse);
+            }
+            return data;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
     // ----------------------------------------------------------------------------------------------------------------------
     private List<CourseCardResponse> filterCourse(CourseFilter filter, List<CourseCardJpql> courseCards) {
         if(filter.getRatingFilter() != null){
@@ -312,8 +327,8 @@ public class CourseServiceImpl implements CourseService {
         }
         List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardJpqlResponse).collect(Collectors.toList());
         for (var courseCardResponse:courseCardResponses) {
-            //feign client user later
-            courseCardResponse.setInstructor(null);
+            InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+            courseCardResponse.setInstructor(instructor.getFullname());
             courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
         }
         return courseCardResponses;

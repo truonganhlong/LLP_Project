@@ -4,6 +4,8 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import com.llp.userservice.clients.CourseClient;
+import com.llp.userservice.clients.dtos.CourseTeacherResponse;
 import com.llp.userservice.dtos.user.*;
 import com.llp.userservice.entities.Role;
 import com.llp.userservice.entities.User;
@@ -11,9 +13,11 @@ import com.llp.userservice.mappers.UserMapper;
 import com.llp.userservice.repositories.RoleRepository;
 import com.llp.userservice.repositories.UserRepository;
 import com.llp.userservice.repositories.UserRoleRepository;
+import com.llp.userservice.repositories.YourCourseRepository;
 import com.llp.userservice.services.JwtService;
 import com.llp.userservice.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,8 +30,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +43,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final YourCourseRepository yourCourseRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CourseClient courseClient;
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
         try {
@@ -141,7 +147,7 @@ public class UserServiceImpl implements UserService {
         try {
             var user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new NotFoundException("User not found"));
-            return UserMapper.convertToResponse(user);
+            return UserMapper.convertToUserResponse(user);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){
@@ -191,7 +197,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public InstructorResponse getInstructorInformation(int id) {
-        return null;
+        try {
+            var user = userRepository.getById(id)
+                    .orElseThrow(() -> new NotFoundException("User not found"));
+            InstructorResponse instructor = UserMapper.convertToInstructorResponse(user);
+            List<CourseTeacherResponse> courses = courseClient.getByTeacher(user.getId().intValue());
+            int studentNum = 0;
+            for (var course:courses) {
+                studentNum += yourCourseRepository.countByCourseId(course.getId().toString());
+            }
+            instructor.setStudentNum(studentNum);
+            instructor.setCourseNum((int) courses.stream().count());
+            return instructor;
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
     }
 
     private void insertImage(User user, MultipartFile imageLink) {

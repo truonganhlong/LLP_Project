@@ -13,10 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @RestController
@@ -87,6 +90,38 @@ public class UserController {
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 84: return your account userId for other services")
+    @RequestMapping(value = "/returnUserId", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('USER') || hasRole('TEACHER') || hasRole('ADMIN')")
+    public ResponseEntity<?> returnUserId(Authentication authentication){
+        try {
+            if (authentication != null && authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+                int userId = user.getId().intValue();
+                return ResponseEntity.ok(userId);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 86: get instructor information")
+    @RequestMapping(value = "/public/instructorInformation/{userId}", method = RequestMethod.GET)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getInstructorInformation(@PathVariable int userId){
+        try {
+            var data = userService.getInstructorInformation(userId);
+            return ResponseEntity.ok(data);
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (InternalServerException e){

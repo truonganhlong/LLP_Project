@@ -3,6 +3,8 @@ package com.llp.courseservice.mappers;
 import com.llp.courseservice.dtos.Course.CourseCardJpql;
 import com.llp.courseservice.dtos.Course.CourseCardResponse;
 import com.llp.courseservice.dtos.Course.CourseOverviewResponse;
+import com.llp.courseservice.dtos.Course.CourseTeacherResponse;
+import com.llp.courseservice.entities.Course;
 import com.llp.courseservice.repositories.CourseRepository;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class CourseMapper {
         }
         //convert string target to List<String> and get only 3 elements
 
-        List<String> targetList = convertStringToList(courseOverview.getTarget());;
+        List<String> targetList = convertStringToList(courseOverview.getTarget());
         targetList = targetList.subList(0,3);
         return CourseOverviewResponse.builder()
                 .id(courseOverview.getId())
@@ -63,5 +65,40 @@ public class CourseMapper {
                 .build();
     }
 
+    public static CourseTeacherResponse convertToTeacherResponse(Course course) throws IOException {
+        List<String> forWhoList = convertStringToList(course.getForWho());
+        List<String> requirementList = convertStringToList(course.getRequirement());
+        List<String> targetList = convertStringToList(course.getTarget());
+        // return the month by word
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        String formattedDateTimeCreatedAt = course.getCreatedAt().format(formatter);
+        String formattedDateTimeUpdatedAt = course.getUpdatedAt().format(formatter);
+        //convert minute to hour
+        String duration = "";
+        if(course.getDuration() < 60){
+            duration = String.valueOf(course.getDuration()) + " total minutes";
+        }
+        else {
+            duration = String.valueOf(course.getDuration()/60) + " total hours";
+        }
+        return CourseTeacherResponse.builder()
+                .id(course.getId())
+                .name(course.getName())
+                .description(course.getDescription())
+                .overview(course.getOverview())
+                .forWho(forWhoList)
+                .requirement(requirementList)
+                .target(targetList)
+                .imageLink(course.getImageLink())
+                .promoVideoLink(course.getPromoVideoLink())
+                .rating(course.getRating())
+                .ratingNum(course.getRatingNum())
+                .saleNum(course.getSaleNum())
+                .price(course.getPrice())
+                .duration(duration)
+                .createdAt(formattedDateTimeCreatedAt)
+                .updatedAt(formattedDateTimeUpdatedAt)
+                .build();
+    }
 
 }

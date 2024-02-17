@@ -1,9 +1,6 @@
 package com.llp.courseservice.services;
 
-import com.llp.courseservice.dtos.Course.CourseCardResponse;
-import com.llp.courseservice.dtos.Course.CourseCreateRequest;
-import com.llp.courseservice.dtos.Course.CourseFilter;
-import com.llp.courseservice.dtos.Course.CourseOverviewResponse;
+import com.llp.courseservice.dtos.Course.*;
 import com.llp.courseservice.dtos.Section.SectionCreateRequest;
 
 import java.util.List;
@@ -26,4 +23,6 @@ public interface CourseService {
     List<CourseCardResponse> searchCourseByName(String keyword, Integer pageNo, Integer pageSize, String sortBy, CourseFilter filter);
     String create(CourseCreateRequest request);
     void updateDuration(String id, int duration);
+
+    List<CourseTeacherResponse> getByTeacher(int createdBy);
 }
