@@ -17,7 +17,6 @@ import com.llp.userservice.repositories.YourCourseRepository;
 import com.llp.userservice.services.JwtService;
 import com.llp.userservice.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -209,6 +208,19 @@ public class UserServiceImpl implements UserService {
             instructor.setStudentNum(studentNum);
             instructor.setCourseNum((int) courses.stream().count());
             return instructor;
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public UserResponse getOtherUserInformation(int id) {
+        try {
+            var user = userRepository.getById(id)
+                    .orElseThrow(() -> new NotFoundException("User not found"));
+            return UserMapper.convertToUserResponse(user);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){

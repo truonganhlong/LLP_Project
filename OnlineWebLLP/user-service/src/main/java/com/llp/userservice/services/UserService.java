@@ -19,4 +19,6 @@ public interface UserService {
 
     InstructorResponse getInstructorInformation(int id);
 
+    UserResponse getOtherUserInformation(int id);
+
 }

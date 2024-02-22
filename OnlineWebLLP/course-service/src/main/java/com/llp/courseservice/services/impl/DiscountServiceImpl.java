@@ -75,7 +75,7 @@ public class DiscountServiceImpl implements DiscountService {
         try {
             Discount discount = discountRepository.getByCourseId(UUID.fromString(courseId));
             if(Objects.isNull(discount)){
-                return 0;
+                return courseRepository.getById(UUID.fromString(courseId)).getPrice();
             }
             else {
                 double discountValue = discount.getDiscountValue();

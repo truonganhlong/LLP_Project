@@ -128,4 +128,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Api 87: get other user information")
+    @RequestMapping(value = "/public/userInformation/{userId}", method = RequestMethod.GET)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getOtherUserInformation(@PathVariable int userId){
+        try {
+            var data = userService.getOtherUserInformation(userId);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

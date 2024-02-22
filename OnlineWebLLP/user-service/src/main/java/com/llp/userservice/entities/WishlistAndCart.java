@@ -18,8 +18,6 @@ import java.util.UUID;
 public class WishlistAndCart {
     @EmbeddedId
     private WishlistAndCartKey id;
-    private double defaultPrice;
-    private double price;
     private boolean isWishlist;
     private boolean isCart;
     @ManyToOne

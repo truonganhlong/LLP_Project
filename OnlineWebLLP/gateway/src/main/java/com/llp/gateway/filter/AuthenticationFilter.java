@@ -75,11 +75,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/lecture/public",
                 "/api/course/level/public",
                 "/api/course/prominentTopic/public",
+                "/api/course/review/public",
                 "/api/course/section/public",
                 "/api/course/subCategory/public",
                 "/api/course/tag/public",
                 "/api/course/topic/public",
                 "/api/order/paymentMethod/public",
+                "/api/order/order/public",
                 "/api/user/user/public"
         );
         private final List<String> ADMIN_API_PATHS = Arrays.asList(
@@ -91,11 +93,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/lecture/admin",
                 "/api/course/level/admin",
                 "/api/course/prominentTopic/admin",
+                "/api/course/review/admin",
                 "/api/course/section/admin",
                 "/api/course/subCategory/admin",
                 "/api/course/tag/admin",
                 "/api/course/topic/admin",
                 "/api/order/paymentMethod/admin",
+                "/api/order/order/admin",
                 "/api/user/user/admin"
         );
         private final List<String> USER_API_PATHS = Arrays.asList(
@@ -107,11 +111,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/lecture/user",
                 "/api/course/level/user",
                 "/api/course/prominentTopic/user",
+                "/api/course/review/user",
                 "/api/course/section/user",
                 "/api/course/subCategory/user",
                 "/api/course/tag/user",
                 "/api/course/topic/user",
                 "/api/order/paymentMethod/user",
+                "/api/order/order/user",
                 "/api/user/user/user"
         );
         private final List<String> TEACHER_API_PATHS = Arrays.asList(
@@ -123,11 +129,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/lecture/teacher",
                 "/api/course/level/teacher",
                 "/api/course/prominentTopic/teacher",
+                "/api/course/review/teacher",
                 "/api/course/section/teacher",
                 "/api/course/subCategory/teacher",
                 "/api/course/tag/teacher",
                 "/api/course/topic/teacher",
                 "/api/order/paymentMethod/teacher",
+                "/api/order/order/teacher",
                 "/api/user/user/teacher"
         );
 

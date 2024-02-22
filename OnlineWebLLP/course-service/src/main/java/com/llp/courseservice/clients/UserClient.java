@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.*;
 public interface UserClient {
     @RequestMapping(value = "/api/user/user/public/instructorInformation/{userId}", method = RequestMethod.GET)
     InstructorResponse getInstructorInformation(@PathVariable int userId);
+
+    @RequestMapping(value = "/api/user/user/public/userInformation/{userId}", method = RequestMethod.GET)
+    InstructorResponse getUserInformation(@PathVariable int userId);
 }

@@ -17,9 +17,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class YourCourseKey implements Serializable {
     @Column(name = "courseId")
-    private UUID courseId;
+    private String courseId;
     @Column(name = "userId")
     private Long userId;
     @Column(name = "orderId")
-    private UUID orderId;
+    private String orderId;
 }

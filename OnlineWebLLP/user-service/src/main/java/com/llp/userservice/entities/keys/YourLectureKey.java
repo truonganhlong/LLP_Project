@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class YourLectureKey implements Serializable {
     @Column(name = "courseId")
-    private UUID courseId;
+    private String courseId;
     @Column(name = "userId")
     private Long userId;
     @Column(name = "lectureId")

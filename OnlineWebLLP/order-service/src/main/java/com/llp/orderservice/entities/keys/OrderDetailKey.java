@@ -19,5 +19,5 @@ public class OrderDetailKey implements Serializable {
     @Column(name = "userId")
     private Long userId;
     @Column(name = "courseId")
-    private UUID courseId;
+    private String courseId;
 }

@@ -212,4 +212,15 @@ public class CourseController {
         }
     }
 
+    @Operation(summary = "Api 90: get course card by id")
+    @RequestMapping(value = "/public/getCourseCardById/{courseId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getCourseCardById(@PathVariable String courseId){
+        try {
+            var data = courseService.getCourseCardById(courseId);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

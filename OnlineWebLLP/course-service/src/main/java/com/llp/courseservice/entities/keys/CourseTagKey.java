@@ -14,13 +14,24 @@ import java.sql.Types;
 import java.util.UUID;
 
 @Embeddable
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseTagKey implements Serializable {
     @Column(name = "courseId", columnDefinition = "VARCHAR(50)")
-    private UUID courseId;
+    private String courseId;
     @Column(name = "tagId")
     private Long tagId;
+
+    public UUID getCourseId() {
+        return courseId != null ? UUID.fromString(courseId) : null;
+    }
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId != null ? courseId.toString() : null;
+    }
+    public Long getTagId(){
+        return tagId;
+    }
+    public void setTagId(Long tagId){
+        this.tagId = tagId;
+    }
 }

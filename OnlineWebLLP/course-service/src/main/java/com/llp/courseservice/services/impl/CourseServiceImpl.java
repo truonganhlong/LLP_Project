@@ -290,6 +290,20 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Override
+    public CourseCardResponse getCourseCardById(String courseId) {
+        try {
+            CourseRepository.CourseCard courseCard = courseRepository.getCourseCardById(courseId);
+            CourseCardResponse courseCardResponse = CourseMapper.convertToCardResponse(courseCard);
+            InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+            courseCardResponse.setInstructor(instructor.getFullname());
+            courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
+            return courseCardResponse;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
     // ----------------------------------------------------------------------------------------------------------------------
     private List<CourseCardResponse> filterCourse(CourseFilter filter, List<CourseCardJpql> courseCards) {
         if(filter.getRatingFilter() != null){

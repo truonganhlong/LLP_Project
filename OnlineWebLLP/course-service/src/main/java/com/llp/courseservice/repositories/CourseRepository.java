@@ -116,4 +116,9 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
     List<CourseCardJpql> searchCourseByName(@Param("keyword") String keyword, Pageable pageable);
 
     List<Course> getByCreatedBy(int createdBy);
+
+    @Query(value = "SELECT dbo.course.id, dbo.course.imageLink, dbo.course.name, dbo.course.createdBy, dbo.course.rating, dbo.course.ratingNum, dbo.course.price\n" +
+            "FROM     dbo.course\n" +
+            "WHERE  dbo.course.id = :id", nativeQuery = true)
+    CourseCard getCourseCardById(@Param("id") String id);
 }

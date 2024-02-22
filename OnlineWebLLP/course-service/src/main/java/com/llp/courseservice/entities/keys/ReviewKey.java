@@ -13,13 +13,24 @@ import java.sql.Types;
 import java.util.UUID;
 
 @Embeddable
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewKey implements Serializable {
     @Column(name = "userId")
     private Long userId;
     @Column(name = "courseId", columnDefinition = "VARCHAR(50)")
-    private UUID courseId;
+    private String courseId;
+
+    public UUID getCourseId() {
+        return courseId != null ? UUID.fromString(courseId) : null;
+    }
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId != null ? courseId.toString() : null;
+    }
+    public Long getUserId(){
+        return userId;
+    }
+    public void setUserId(Long topicId){
+        this.userId = userId;
+    }
 }

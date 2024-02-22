@@ -17,9 +17,7 @@ import java.util.UUID;
 public class OrderDetail {
     @EmbeddedId
     private OrderDetailKey id;
-    private double defaultPrice;
     private double price;
-    private boolean status;
     @ManyToOne
     @JoinColumn(name = "orderId")
     @JsonIgnore

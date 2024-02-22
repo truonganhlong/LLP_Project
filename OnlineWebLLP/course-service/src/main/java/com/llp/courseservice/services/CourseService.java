@@ -25,4 +25,6 @@ public interface CourseService {
     void updateDuration(String id, int duration);
 
     List<CourseTeacherResponse> getByTeacher(int createdBy);
+
+    CourseCardResponse getCourseCardById(String courseId);
 }
