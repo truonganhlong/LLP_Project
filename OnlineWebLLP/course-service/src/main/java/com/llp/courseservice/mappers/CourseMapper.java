@@ -1,9 +1,6 @@
 package com.llp.courseservice.mappers;
 
-import com.llp.courseservice.dtos.Course.CourseCardJpql;
-import com.llp.courseservice.dtos.Course.CourseCardResponse;
-import com.llp.courseservice.dtos.Course.CourseOverviewResponse;
-import com.llp.courseservice.dtos.Course.CourseTeacherResponse;
+import com.llp.courseservice.dtos.Course.*;
 import com.llp.courseservice.entities.Course;
 import com.llp.courseservice.repositories.CourseRepository;
 
@@ -100,5 +97,4 @@ public class CourseMapper {
                 .updatedAt(formattedDateTimeUpdatedAt)
                 .build();
     }
-
 }

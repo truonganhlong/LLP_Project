@@ -201,12 +201,23 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new NotFoundException("User not found"));
             InstructorResponse instructor = UserMapper.convertToInstructorResponse(user);
             List<CourseTeacherResponse> courses = courseClient.getByTeacher(user.getId().intValue());
+            double ratingTotal = 0;
+            int ratingNumTotal = 0;
+            int courseTotal = courses.size();
             int studentNum = 0;
             for (var course:courses) {
                 studentNum += yourCourseRepository.countByCourseId(course.getId().toString());
+                if(course.getRating() == 0 && course.getRatingNum() == 0){
+                    courseTotal--;
+                } else {
+                    ratingTotal += course.getRating();
+                    ratingNumTotal += course.getRatingNum();
+                }
             }
             instructor.setStudentNum(studentNum);
             instructor.setCourseNum((int) courses.stream().count());
+            instructor.setRating(Math.round(ratingTotal/courseTotal * 10.0) / 10.0);
+            instructor.setReviewNum(ratingNumTotal);
             return instructor;
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());

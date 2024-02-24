@@ -1,6 +1,7 @@
 package com.llp.courseservice.services;
 
 
+import com.llp.courseservice.dtos.Review.ReviewCreateRequest;
 import com.llp.courseservice.dtos.Review.ReviewResponse;
 
 import java.util.List;
@@ -10,5 +11,6 @@ public interface ReviewService {
 
     List<ReviewResponse> getAllReviewByCourse(String courseId, Integer pageNo, Integer pageSize);
 
-
+    void create(String authorizationHeader, ReviewCreateRequest request);
+    void updateReviewToProminent(String courseId, int userId);
 }

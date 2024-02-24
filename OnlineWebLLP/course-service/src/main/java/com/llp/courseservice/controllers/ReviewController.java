@@ -1,15 +1,14 @@
 package com.llp.courseservice.controllers;
 
+import com.llp.courseservice.dtos.Review.ReviewCreateRequest;
 import com.llp.courseservice.services.ReviewService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/course/review")
@@ -37,6 +36,28 @@ public class ReviewController {
         try {
             var data = reviewService.getAllReviewByCourse(courseId,pageNo,pageSize);
             return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 102: create review")
+    @RequestMapping(value="/user", method = RequestMethod.POST)
+    public ResponseEntity<?> create(@RequestHeader("Authorization") String authorizationHeader, @RequestBody ReviewCreateRequest request){
+        try {
+            reviewService.create(authorizationHeader,request);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Create successfully");
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 103: update review to prominent")
+    @RequestMapping(value="/admin", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateReviewToProminent(@RequestParam String courseId, @RequestParam int userId){
+        try {
+            reviewService.updateReviewToProminent(courseId,userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

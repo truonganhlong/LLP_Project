@@ -16,5 +16,6 @@ public class ReviewResponse {
     private String username;
     private String imageLink;
     private String content;
+    private String createdAt;
     private int rating;
 }

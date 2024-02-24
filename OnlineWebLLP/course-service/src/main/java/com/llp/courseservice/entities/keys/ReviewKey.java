@@ -30,7 +30,7 @@ public class ReviewKey implements Serializable {
     public Long getUserId(){
         return userId;
     }
-    public void setUserId(Long topicId){
+    public void setUserId(Long userId){
         this.userId = userId;
     }
 }

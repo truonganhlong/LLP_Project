@@ -39,7 +39,7 @@ public class WishlistAndCartController {
         }
     }
 
-    @Operation(summary = "Api 92: add course to wishlist")
+    @Operation(summary = "Api 92: add course to cart")
     @RequestMapping(value = "/addToCart", method = RequestMethod.POST)
     public ResponseEntity<?> addToCart(Authentication authentication, @RequestParam String courseId){
         try {

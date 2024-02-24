@@ -1,7 +1,10 @@
 package com.llp.courseservice.dtos.Course;
 
 import com.llp.courseservice.clients.dtos.InstructorResponse;
+import com.llp.courseservice.dtos.Category.CategoryNameResponse;
 import com.llp.courseservice.dtos.Section.SectionDetailResponse;
+import com.llp.courseservice.dtos.SubCategory.SubCategoryUserResponse;
+import com.llp.courseservice.dtos.Topic.TopicNameResponse;
 import lombok.*;
 
 import java.util.List;
@@ -14,9 +17,9 @@ import java.util.UUID;
 @Builder
 public class CourseDetailResponse {
     private UUID id;
-    private String categoryName;
-    private String subCategoryName;
-    private String topicName;
+    private CategoryNameResponse category;
+    private SubCategoryUserResponse subCategory;
+    private TopicNameResponse topic;
     private String name;
     private String description;
     private String overview;

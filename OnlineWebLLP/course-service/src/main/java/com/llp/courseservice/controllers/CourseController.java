@@ -223,4 +223,16 @@ public class CourseController {
         }
     }
 
+    @Operation(summary = "Api 105: get course detail")
+    @RequestMapping(value = "/public/getCourseDetail/{courseId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getCourseDetail(@RequestHeader("Authorization") String authorizationHeader,
+                                          @PathVariable String courseId){
+        try {
+            var data = courseService.getCourseDetail(courseId,authorizationHeader);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

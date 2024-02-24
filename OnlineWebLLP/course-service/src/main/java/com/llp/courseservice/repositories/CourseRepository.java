@@ -2,6 +2,7 @@ package com.llp.courseservice.repositories;
 
 
 import com.llp.courseservice.dtos.Course.CourseCardJpql;
+import com.llp.courseservice.dtos.Course.CourseDetailJpql;
 import com.llp.courseservice.entities.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +37,8 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
         int getRatingNum();
         double getPrice();
     }
-    Course getById(UUID id);
+    @Query(value = "SELECT c FROM Course c WHERE c.id = :id")
+    Course getById(@Param("id") UUID id);
     @Query(value = "SELECT dbo.course.id, dbo.course.name, dbo.course.updatedAt, dbo.course.duration, dbo.[level].name AS level, dbo.course.overview, dbo.course.target\n" +
             "FROM     dbo.course INNER JOIN\n" +
             "         dbo.[level] ON dbo.course.levelId = dbo.[level].id\n" +
@@ -121,4 +123,17 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "FROM     dbo.course\n" +
             "WHERE  dbo.course.id = :id", nativeQuery = true)
     CourseCard getCourseCardById(@Param("id") String id);
+
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseDetailJpql(c.id,c.name,c.description,c.overview,c.forWho,c.requirement,c.target,c.imageLink,c.promoVideoLink,c.rating,c.ratingNum,c.saleNum,c.price,c.duration,c.createdAt,c.updatedAt,c.createdBy,t.id,sc.id,ca.id,le.id,la.id)\n" +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "JOIN sc.category ca\n" +
+            "WHERE c.id = :courseId\n" +
+            "ORDER BY t.id LIMIT 1")
+    CourseDetailJpql getCourseDetail(@Param("courseId") UUID courseId);
+
 }

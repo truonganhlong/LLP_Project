@@ -1,8 +1,11 @@
 package com.llp.courseservice.services.impl;
 
 import com.llp.courseservice.dtos.Lecture.LectureCreateRequest;
+import com.llp.courseservice.dtos.Lecture.LectureDetailAfterPurchasedResponse;
+import com.llp.courseservice.dtos.Lecture.LectureDetailBeforePurchasedResponse;
 import com.llp.courseservice.entities.Lecture;
 import com.llp.courseservice.entities.Section;
+import com.llp.courseservice.mappers.LectureMapper;
 import com.llp.courseservice.repositories.CourseRepository;
 import com.llp.courseservice.repositories.LectureRepository;
 import com.llp.courseservice.repositories.SectionRepository;
@@ -16,13 +19,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LectureServiceImpl implements LectureService {
     private final LectureRepository lectureRepository;
     private final SectionRepository sectionRepository;
-    private final CourseService courseService;
+    //private final CourseService courseService;
     @Override
     public void create(LectureCreateRequest request, int sectionId) {
         try {
@@ -39,7 +43,8 @@ public class LectureServiceImpl implements LectureService {
                     .section(sectionRepository.getById(sectionId))
                     .build();
             lectureRepository.save(lecture);
-            courseService.updateDuration(String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()), lecture.getDuration());
+            //courseService.updateDuration(String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()), lecture.getDuration());
+            lectureRepository.updateCourseDuration(lecture.getDuration(), String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()));
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){
@@ -58,6 +63,33 @@ public class LectureServiceImpl implements LectureService {
             lectureRepository.save(lecture);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public List<LectureDetailBeforePurchasedResponse> getAllLectureBySectionBeforePurchased(int sectionId) {
+        try {
+            List<Lecture> lectures = lectureRepository.getAllBySection(sectionId);
+            List<LectureDetailBeforePurchasedResponse> data = lectures.stream().map(LectureMapper :: convertToDetailBeforePurchasedResponse).collect(Collectors.toList());
+            for (var lecture:data) {
+                if(lecture.isFree() == false){
+                    lecture.setLink(null);
+                }
+            }
+            return data;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public List<LectureDetailAfterPurchasedResponse> getAllLectureBySectionAfterPurchased(int sectionId) {
+        try {
+            List<Lecture> lectures = lectureRepository.getAllBySection(sectionId);
+            List<LectureDetailAfterPurchasedResponse> data = lectures.stream().map(LectureMapper :: convertToDetailAfterPurchasedResponse).collect(Collectors.toList());
+            return data;
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }

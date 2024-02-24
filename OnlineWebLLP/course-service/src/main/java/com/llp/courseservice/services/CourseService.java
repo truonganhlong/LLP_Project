@@ -22,9 +22,11 @@ public interface CourseService {
     void delete(String id);
     List<CourseCardResponse> searchCourseByName(String keyword, Integer pageNo, Integer pageSize, String sortBy, CourseFilter filter);
     String create(CourseCreateRequest request);
-    void updateDuration(String id, int duration);
+    //void updateDuration(String id, int duration);
 
     List<CourseTeacherResponse> getByTeacher(int createdBy);
 
     CourseCardResponse getCourseCardById(String courseId);
+
+    CourseDetailResponse getCourseDetail(String courseId, String authorizationHeader);
 }

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llp.courseservice.entities.keys.ReviewKey;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -17,6 +20,8 @@ public class Review {
     private ReviewKey id;
     private String content;
     private int rating;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
     private boolean isProminent;
     @ManyToOne
     @MapsId("courseId")

@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface YourCourseRepository extends JpaRepository<YourCourse, YourCourseKey> {
     @Query(value = "SELECT COUNT(*) FROM dbo.yourCourse WHERE dbo.yourCourse.courseId = :courseId", nativeQuery = true)
@@ -18,4 +20,10 @@ public interface YourCourseRepository extends JpaRepository<YourCourse, YourCour
     @Modifying
     @Query(value = "INSERT INTO yourCourse (courseId,userId,orderId) VALUES(:courseId,:userId,:orderId)", nativeQuery = true)
     void create(@Param("courseId") String courseId, @Param("userId") int userId, @Param("orderId") String orderId);
+
+    @Query(value = "SELECT yc FROM YourCourse yc WHERE yc.id.userId = :userId AND yc.id.courseId = :courseId")
+    YourCourse getByUserAndCourse(@Param("userId") int userId, @Param("courseId") String courseId);
+
+    @Query(value = "SELECT yc FROM YourCourse yc WHERE yc.id.userId = :userId")
+    List<YourCourse> getByUser(@Param("userId") int userId);
 }

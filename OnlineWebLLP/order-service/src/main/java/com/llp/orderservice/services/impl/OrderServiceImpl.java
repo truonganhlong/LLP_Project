@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     private List<OrderResponse> getOrderResponses(List<Order> orders) {
         List<OrderResponse> data = new ArrayList<>();
         for (var order:orders) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy dd hh:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy hh:mm");
             String orderTime = order.getOrderTime().format(formatter);
             OrderResponse orderResponse = OrderResponse.builder()
                     .id(order.getId())

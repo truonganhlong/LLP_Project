@@ -36,4 +36,40 @@ public class YourCourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Api 101: check if user have permission to that course or not")
+    @RequestMapping(value="/authenticationCourse", method = RequestMethod.GET)
+    public ResponseEntity<?> isHaveAuthenticationCourse(Authentication authentication, @RequestParam String courseId){
+        try {
+            if (authentication != null && authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+                int userId = user.getId().intValue();
+                var data = yourCourseService.isHaveAuthenticationToCourse(userId,courseId);
+                return ResponseEntity.ok(data);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 104: get your course")
+    @RequestMapping(value = "/yourCourse", method = RequestMethod.GET)
+    public ResponseEntity<?> getYourCourse(Authentication authentication){
+        try {
+            if (authentication != null && authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+                int userId = user.getId().intValue();
+                var data = yourCourseService.getYourCourse(userId);
+                return ResponseEntity.ok(data);
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

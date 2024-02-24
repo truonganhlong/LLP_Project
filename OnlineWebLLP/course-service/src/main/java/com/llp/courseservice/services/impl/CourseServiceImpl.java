@@ -3,12 +3,18 @@ package com.llp.courseservice.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.llp.courseservice.clients.UserClient;
 import com.llp.courseservice.clients.dtos.InstructorResponse;
+import com.llp.courseservice.dtos.Category.CategoryNameResponse;
 import com.llp.courseservice.dtos.Course.*;
+import com.llp.courseservice.dtos.Section.SectionDetailResponse;
+import com.llp.courseservice.dtos.SubCategory.SubCategoryUserResponse;
+import com.llp.courseservice.dtos.Topic.TopicNameResponse;
 import com.llp.courseservice.entities.Course;
 import com.llp.courseservice.mappers.CourseMapper;
 import com.llp.courseservice.repositories.*;
 import com.llp.courseservice.services.CourseService;
 import com.llp.courseservice.services.DiscountService;
+import com.llp.courseservice.services.LectureService;
+import com.llp.courseservice.services.SectionService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.sharedproject.sharedFunc.ReturnCourseFilter;
@@ -24,11 +30,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.llp.sharedproject.sharedFunc.SharedFunction.convertStringToList;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +50,11 @@ public class CourseServiceImpl implements CourseService {
     private final LanguageRepository languageRepository;
     private final LevelRepository levelRepository;
     private final CourseTopicRepository courseTopicRepository;
+    private final TopicRepository topicRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final SectionService sectionService;
+    private final LectureService lectureService;
     private final UserClient userClient;
     @Override
     public CourseOverviewResponse getCourseOverview(String id) {
@@ -256,22 +270,22 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    @Override
-    public void updateDuration(String id, int duration) {
-        try {
-            Course course = courseRepository.getById(UUID.fromString(id));
-            if(Objects.isNull(course)){
-                throw new NotFoundException("Not found in database");
-            }
-            int durationByMinutes = duration/60;
-            course.setDuration(course.getDuration() + durationByMinutes);
-            courseRepository.save(course);
-        } catch (NotFoundException e){
-            throw new NotFoundException(e.getMessage());
-        } catch (Exception e){
-            throw new InternalServerException("Server Error");
-        }
-    }
+//    @Override
+//    public void updateDuration(String id, int duration) {
+//        try {
+//            Course course = courseRepository.getById(UUID.fromString(id));
+//            if(Objects.isNull(course)){
+//                throw new NotFoundException("Not found in database");
+//            }
+//            int durationByMinutes = duration/60;
+//            course.setDuration(course.getDuration() + durationByMinutes);
+//            courseRepository.save(course);
+//        } catch (NotFoundException e){
+//            throw new NotFoundException(e.getMessage());
+//        } catch (Exception e){
+//            throw new InternalServerException("Server Error");
+//        }
+//    }
 
     @Override
     public List<CourseTeacherResponse> getByTeacher(int createdBy) {
@@ -299,6 +313,101 @@ public class CourseServiceImpl implements CourseService {
             courseCardResponse.setInstructor(instructor.getFullname());
             courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
             return courseCardResponse;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public CourseDetailResponse getCourseDetail(String courseId, String authorizationHeader) {
+        try {
+            CourseDetailJpql courseDetailJpql = courseRepository.getCourseDetail(UUID.fromString(courseId));
+            if(Objects.isNull(courseDetailJpql)){
+                throw new NotFoundException("Not found in database");
+            }
+            CategoryNameResponse categoryNameResponse = CategoryNameResponse.builder()
+                    .id(courseDetailJpql.getCategoryId())
+                    .name(categoryRepository.getById(courseDetailJpql.getCategoryId()).getName())
+                    .build();
+            SubCategoryUserResponse subCategoryUserResponse = SubCategoryUserResponse.builder()
+                    .id(courseDetailJpql.getSubCategoryId())
+                    .name(subCategoryRepository.getById(courseDetailJpql.getSubCategoryId()).getName())
+                    .build();
+            TopicNameResponse topicNameResponse = TopicNameResponse.builder()
+                    .id(courseDetailJpql.getTopicId())
+                    .name(topicRepository.getById(courseDetailJpql.getTopicId()).getName())
+                    .build();
+            // convert string to list
+            List<String> forWhoList = convertStringToList(courseDetailJpql.getForWho());
+            List<String> requirementList = convertStringToList(courseDetailJpql.getRequirement());
+            List<String> targetList = convertStringToList(courseDetailJpql.getTarget());
+
+            // return the month by word
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+            String formattedDateTimeCreatedAt = courseDetailJpql.getCreatedAt().format(formatter);
+            String formattedDateTimeUpdatedAt = courseDetailJpql.getUpdatedAt().format(formatter);
+            //convert minute to hour
+            String duration = "";
+            if(courseDetailJpql.getDuration() < 60){
+                duration = String.valueOf(courseDetailJpql.getDuration()) + " total minutes";
+            }
+            else {
+                duration = String.valueOf(courseDetailJpql.getDuration()/60) + " total hours";
+            }
+            //get instructor
+            InstructorResponse instructor = userClient.getInstructorInformation(courseDetailJpql.getCreatedBy().intValue());
+            CourseDetailResponse data = CourseDetailResponse.builder()
+                    .id(courseDetailJpql.getId())
+                    .category(categoryNameResponse)
+                    .subCategory(subCategoryUserResponse)
+                    .topic(topicNameResponse)
+                    .name(courseDetailJpql.getName())
+                    .description(courseDetailJpql.getDescription())
+                    .overview(courseDetailJpql.getOverview())
+                    .forWho(forWhoList)
+                    .requirement(requirementList)
+                    .target(targetList)
+                    .imageLink(courseDetailJpql.getImageLink())
+                    .promoVideoLink(courseDetailJpql.getPromoVideoLink())
+                    .rating(courseDetailJpql.getRating())
+                    .ratingNum(courseDetailJpql.getRatingNum())
+                    .saleNum(courseDetailJpql.getSaleNum())
+                    .price(courseDetailJpql.getPrice())
+                    .discountPrice(discountService.returnDiscountPrice(courseDetailJpql.getId().toString()))
+                    .duration(duration)
+                    .createdAt(formattedDateTimeCreatedAt)
+                    .updatedAt(formattedDateTimeUpdatedAt)
+                    .instructorResponse(instructor)
+                    .language(languageRepository.getById(courseDetailJpql.getLanguageId()).getName())
+                    .level(levelRepository.getById(courseDetailJpql.getLevelId()).getName())
+                    .tag(tagRepository.getTagNameByCourseId(courseDetailJpql.getId()))
+                    .build();
+            List<SectionDetailResponse> sections = sectionService.getAllSectionByCourse(String.valueOf(data.getId()));
+            data.setSectionDetailResponses(sections);
+            data.setSectionNum(sections.size());
+            for (var section:sections) {
+                if(authorizationHeader == null || userClient.isHaveAuthenticationCourse(authorizationHeader, String.valueOf(data.getId())) == false){
+                    section.setLectureDetailBeforePurchasedResponses(lectureService.getAllLectureBySectionBeforePurchased(section.getId().intValue()));
+                    section.setLectureNum(lectureService.getAllLectureBySectionBeforePurchased(section.getId().intValue()).size());
+                    int sectionDuration = 0;
+                    for (var lecture:section.getLectureDetailBeforePurchasedResponses()) {
+                        sectionDuration += lecture.getDuration();
+                    }
+                    section.setDuration(secondsToMinutes(sectionDuration));
+                }
+                else {
+                    section.setLectureDetailAfterPurchasedResponses(lectureService.getAllLectureBySectionAfterPurchased(section.getId().intValue()));
+                    section.setLectureNum(lectureService.getAllLectureBySectionAfterPurchased(section.getId().intValue()).size());
+                    int sectionDuration = 0;
+                    for (var lecture:section.getLectureDetailAfterPurchasedResponses()) {
+                        sectionDuration += lecture.getDuration();
+                    }
+                    section.setDuration(secondsToMinutes(sectionDuration));
+                }
+            }
+            return data;
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
@@ -355,6 +464,17 @@ public class CourseServiceImpl implements CourseService {
             courseRepository.save(course);
         } catch (IOException e) {
             throw new NotFoundException("Not found file");
+        }
+    }
+
+    private static String secondsToMinutes(int seconds) {
+        int minutes = seconds / 60;
+        if(minutes < 60){
+            return String.format("%d min", minutes);
+        } else {
+            int hours = minutes / 60;
+            int remainingMinutes = minutes % 60;
+            return String.format("%dhr %02d min", hours, remainingMinutes);
         }
     }
 }
