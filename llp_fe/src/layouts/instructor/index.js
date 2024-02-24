@@ -191,15 +191,7 @@ export default function InstructorMainLayout({ children }) {
       <Header />
       <Box
         component="main"
-      // sx={{
-      //   flexGrow: 1,
-      //   ...(!isHome && {
-      //     pt: { xs: 8, md: 11 },
-      //   }),
-      // }}
       >
-
-
         <AppBar1 position="fixed" open={open} sx={{ backgroundColor: 'white' }}>
           <Toolbar>
             <IconButton
@@ -221,7 +213,7 @@ export default function InstructorMainLayout({ children }) {
               spacing={3}
               sx={{ marginLeft: '80%' }}
             >
-              <Button href="#" sx={{ color: 'black', fontSize: '13px' }} >
+              <Button onClick={() => push('/')} sx={{ color: 'black', fontSize: '13px' }} >
                 Student
               </Button>
               <Tooltip title="Open settings">
@@ -269,8 +261,6 @@ export default function InstructorMainLayout({ children }) {
         </Drawer1>
         {children}
       </Box>
-
-      {/* <Footer /> */}
     </Box>
   );
 }
