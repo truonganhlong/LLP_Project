@@ -1,5 +1,6 @@
 package com.llp.orderservice.services.impl;
 
+import com.llp.orderservice.clients.CourseClient;
 import com.llp.orderservice.clients.UserClient;
 import com.llp.orderservice.clients.dtos.WishlistAndCartResponse;
 import com.llp.orderservice.dtos.order.OrderDetailResponse;
@@ -28,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final PaymentMethodRepository paymentMethodRepository;
     private final UserClient userClient;
+    private final CourseClient courseClient;
     @Override
     public void checkout(String authorizationHeader, int paymentId) {
         try {
@@ -45,6 +47,8 @@ public class OrderServiceImpl implements OrderService {
                 orderDetailRepository.create(userId,course.getId().toString(),order.getId().toString(),course.getDiscountPrice());
                 //add data to your course
                 userClient.create(authorizationHeader,course.getId().toString(),order.getId().toString());
+                //update sale num in course after checkout
+                courseClient.updateSaleNum(String.valueOf(course.getId()));
                 //remove cart
                 userClient.removeFromWishlistAndCart(authorizationHeader,course.getId().toString());
             }

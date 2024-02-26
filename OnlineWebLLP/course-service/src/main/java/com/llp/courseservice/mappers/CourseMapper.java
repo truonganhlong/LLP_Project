@@ -18,10 +18,13 @@ public class CourseMapper {
         //convert minute to hour
         String duration = "";
         if(courseOverview.getDuration() < 60){
-            duration = String.valueOf(courseOverview.getDuration()) + " total minutes";
+            duration = String.valueOf(courseOverview.getDuration()) + " total seconds";
+        }
+        else if (courseOverview.getDuration() < 3600){
+            duration = String.valueOf(courseOverview.getDuration()/60) + " total minutes";
         }
         else {
-            duration = String.valueOf(courseOverview.getDuration()/60) + " total hours";
+            duration = String.valueOf(courseOverview.getDuration()/360) + " total hours";
         }
         //convert string target to List<String> and get only 3 elements
 
@@ -73,10 +76,13 @@ public class CourseMapper {
         //convert minute to hour
         String duration = "";
         if(course.getDuration() < 60){
-            duration = String.valueOf(course.getDuration()) + " total minutes";
+            duration = String.valueOf(course.getDuration()) + " total seconds";
+        }
+        else if (course.getDuration() < 3600){
+            duration = String.valueOf(course.getDuration()/60) + " total minutes";
         }
         else {
-            duration = String.valueOf(course.getDuration()/60) + " total hours";
+            duration = String.valueOf(course.getDuration()/360) + " total hours";
         }
         return CourseTeacherResponse.builder()
                 .id(course.getId())

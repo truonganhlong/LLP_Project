@@ -7,6 +7,7 @@ import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -225,11 +226,22 @@ public class CourseController {
 
     @Operation(summary = "Api 105: get course detail")
     @RequestMapping(value = "/public/getCourseDetail/{courseId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getCourseDetail(@RequestHeader("Authorization") String authorizationHeader,
+    public ResponseEntity<?> getCourseDetail(@RequestHeader(name = "Authorization", required = false) @Nullable String authorizationHeader,
                                           @PathVariable String courseId){
         try {
             var data = courseService.getCourseDetail(courseId,authorizationHeader);
             return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 106: update sale num in course when user checkout")
+    @RequestMapping(value = "/public/updateSaleNum/{courseId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateSaleNum(@PathVariable String courseId){
+        try {
+            courseService.updateSaleNum(courseId);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Update successfully");
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

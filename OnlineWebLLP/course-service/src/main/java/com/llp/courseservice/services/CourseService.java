@@ -29,4 +29,5 @@ public interface CourseService {
     CourseCardResponse getCourseCardById(String courseId);
 
     CourseDetailResponse getCourseDetail(String courseId, String authorizationHeader);
+    void updateSaleNum(String courseId);
 }

@@ -9,6 +9,8 @@ import com.llp.userservice.clients.dtos.CourseTeacherResponse;
 import com.llp.userservice.dtos.user.*;
 import com.llp.userservice.entities.Role;
 import com.llp.userservice.entities.User;
+import com.llp.userservice.entities.UserRole;
+import com.llp.userservice.entities.keys.UserRoleKey;
 import com.llp.userservice.mappers.UserMapper;
 import com.llp.userservice.repositories.RoleRepository;
 import com.llp.userservice.repositories.UserRepository;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,6 +69,9 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
             userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
+            List<UserRole> userRoleList = new ArrayList<>();
+            userRoleList.add(userRoleRepository.getById(new UserRoleKey((long) user.getId().intValue(), (long) role.getId().intValue())));
+            user.setUserRoles(userRoleList);
             var token = jwtService.generateToken(user);
             return AuthenticationResponse.builder()
                     .token(token)
@@ -124,6 +130,10 @@ public class UserServiceImpl implements UserService {
                     .build();
             userRepository.save(user);
             userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
+            userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
+            List<UserRole> userRoleList = new ArrayList<>();
+            userRoleList.add(userRoleRepository.getById(new UserRoleKey((long) user.getId().intValue(), (long) role.getId().intValue())));
+            user.setUserRoles(userRoleList);
             var token = jwtService.generateToken(user);
             return AuthenticationResponse.builder()
                     .token(token)

@@ -349,10 +349,13 @@ public class CourseServiceImpl implements CourseService {
             //convert minute to hour
             String duration = "";
             if(courseDetailJpql.getDuration() < 60){
-                duration = String.valueOf(courseDetailJpql.getDuration()) + " total minutes";
+                duration = String.valueOf(courseDetailJpql.getDuration()) + " total seconds";
+            }
+            else if (courseDetailJpql.getDuration() < 3600){
+                duration = String.valueOf(courseDetailJpql.getDuration()/60) + " total minutes";
             }
             else {
-                duration = String.valueOf(courseDetailJpql.getDuration()/60) + " total hours";
+                duration = String.valueOf(courseDetailJpql.getDuration()/360) + " total hours";
             }
             //get instructor
             InstructorResponse instructor = userClient.getInstructorInformation(courseDetailJpql.getCreatedBy().intValue());
@@ -406,6 +409,22 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
             return data;
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public void updateSaleNum(String courseId) {
+        try {
+            Course course = courseRepository.getById(UUID.fromString(courseId));
+            if(Objects.isNull(course)){
+                throw new NotFoundException("Not found in database");
+            }
+            course.setSaleNum(course.getSaleNum() + 1);
+            courseRepository.save(course);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){
