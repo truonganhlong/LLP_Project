@@ -24,7 +24,7 @@ public class CourseMapper {
             duration = String.valueOf(courseOverview.getDuration()/60) + " total minutes";
         }
         else {
-            duration = String.valueOf(courseOverview.getDuration()/360) + " total hours";
+            duration = String.valueOf(courseOverview.getDuration()/3600) + " total hours";
         }
         //convert string target to List<String> and get only 3 elements
 
@@ -82,7 +82,7 @@ public class CourseMapper {
             duration = String.valueOf(course.getDuration()/60) + " total minutes";
         }
         else {
-            duration = String.valueOf(course.getDuration()/360) + " total hours";
+            duration = String.valueOf(course.getDuration()/3600) + " total hours";
         }
         return CourseTeacherResponse.builder()
                 .id(course.getId())
@@ -93,7 +93,6 @@ public class CourseMapper {
                 .requirement(requirementList)
                 .target(targetList)
                 .imageLink(course.getImageLink())
-                .promoVideoLink(course.getPromoVideoLink())
                 .rating(course.getRating())
                 .ratingNum(course.getRatingNum())
                 .saleNum(course.getSaleNum())

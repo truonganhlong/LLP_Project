@@ -2,6 +2,7 @@ package com.llp.orderservice.services.impl;
 
 import com.llp.orderservice.clients.CourseClient;
 import com.llp.orderservice.clients.UserClient;
+import com.llp.orderservice.clients.dtos.CourseCardResponse;
 import com.llp.orderservice.clients.dtos.WishlistAndCartResponse;
 import com.llp.orderservice.dtos.order.OrderDetailResponse;
 import com.llp.orderservice.dtos.order.OrderResponse;
@@ -31,18 +32,38 @@ public class OrderServiceImpl implements OrderService {
     private final UserClient userClient;
     private final CourseClient courseClient;
     @Override
-    public void checkout(String authorizationHeader, int paymentId) {
+    public void checkout(String authorizationHeader, String courseId, int paymentId) {
         try {
-            WishlistAndCartResponse cart = userClient.getCart(authorizationHeader);
-            int userId = userClient.returnUserId(authorizationHeader);
-            Order order = Order.builder()
-                    .userId(((long) userId))
-                    .orderTime(LocalDateTime.now())
-                    .paymentMethod(paymentMethodRepository.getById(paymentId))
-                    .build();
-            order.setTotalPrice(cart.getTotalDiscountPrice());
-            orderRepository.save(order);
-            for (var course:cart.getCourseCardResponses()) {
+            if(courseId == null){
+                WishlistAndCartResponse cart = userClient.getCart(authorizationHeader);
+                int userId = userClient.returnUserId(authorizationHeader);
+                Order order = Order.builder()
+                        .userId(((long) userId))
+                        .orderTime(LocalDateTime.now())
+                        .paymentMethod(paymentMethodRepository.getById(paymentId))
+                        .build();
+                order.setTotalPrice(cart.getTotalDiscountPrice());
+                orderRepository.save(order);
+                for (var course:cart.getCourseCardResponses()) {
+                    //create order detail
+                    orderDetailRepository.create(userId,course.getId().toString(),order.getId().toString(),course.getDiscountPrice());
+                    //add data to your course
+                    userClient.create(authorizationHeader,course.getId().toString(),order.getId().toString());
+                    //update sale num in course after checkout
+                    courseClient.updateSaleNum(String.valueOf(course.getId()));
+                    //remove cart
+                    userClient.removeFromWishlistAndCart(authorizationHeader,course.getId().toString());
+                }
+            } else {
+                CourseCardResponse course = courseClient.getCourseCardById(courseId);
+                int userId = userClient.returnUserId(authorizationHeader);
+                Order order = Order.builder()
+                        .userId(((long) userId))
+                        .orderTime(LocalDateTime.now())
+                        .paymentMethod(paymentMethodRepository.getById(paymentId))
+                        .build();
+                order.setTotalPrice(course.getDiscountPrice());
+                orderRepository.save(order);
                 //create order detail
                 orderDetailRepository.create(userId,course.getId().toString(),order.getId().toString(),course.getDiscountPrice());
                 //add data to your course
@@ -52,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
                 //remove cart
                 userClient.removeFromWishlistAndCart(authorizationHeader,course.getId().toString());
             }
+
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
@@ -96,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
             List<OrderDetail> orderDetails = orderDetailRepository.getAllByOrderId(order.getId());
             for (var orderDetail:orderDetails) {
                 OrderDetailResponse orderDetailResponse = OrderDetailResponse.builder()
-                        .course(userClient.getCourseCardById(orderDetail.getId().getCourseId()))
+                        .course(courseClient.getCourseCardById(orderDetail.getId().getCourseId()))
                         .buyPrice(orderDetail.getPrice())
                         .build();
                 orderDetailResponses.add(orderDetailResponse);

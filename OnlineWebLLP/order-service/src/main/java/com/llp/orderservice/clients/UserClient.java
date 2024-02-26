@@ -26,6 +26,4 @@ public interface UserClient {
     @RequestMapping(value = "/api/user/user/public/userInformation/{userId}", method = RequestMethod.GET)
     UserResponse getOtherUserInformation(@PathVariable int userId);
 
-    @RequestMapping(value = "/api/course/course/public/getCourseCardById/{courseId}", method = RequestMethod.GET)
-    CourseCardResponse getCourseCardById(@PathVariable String courseId);
 }

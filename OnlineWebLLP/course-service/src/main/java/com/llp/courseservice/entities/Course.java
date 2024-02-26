@@ -31,7 +31,6 @@ public class Course {
     private String requirement;
     private String target;
     private String imageLink;
-    private String promoVideoLink;
     private double rating;
     private int ratingNum;
     private int saleNum;

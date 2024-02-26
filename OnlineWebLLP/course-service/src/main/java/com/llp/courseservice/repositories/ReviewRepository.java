@@ -50,4 +50,7 @@ public interface ReviewRepository extends PagingAndSortingRepository<Review, Rev
     @Modifying
     @Query(value = "UPDATE dbo.review SET dbo.review.isProminent = 1 WHERE dbo.review.courseId = :courseId AND dbo.review.userId = :userId", nativeQuery = true)
     void updateReviewToProminent(@Param("courseId") String courseId, @Param("userId") int userId);
+
+    @Query(value = "SELECT COUNT(*) FROM dbo.review WHERE dbo.review.courseId = :courseId AND dbo.review.rating = :rating", nativeQuery = true)
+    int reviewCountFilterByRating(@Param("courseId") String courseId, @Param("rating") int rating);
 }

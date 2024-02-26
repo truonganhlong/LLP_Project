@@ -4,6 +4,7 @@ import com.llp.orderservice.services.OrderService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ public class OrderController {
 
     @Operation(summary = "Api 98: checkout")
     @RequestMapping(value = "/user/checkout", method = RequestMethod.POST)
-    public ResponseEntity<?> checkout(@RequestHeader("Authorization") String authorizationHeader, @RequestParam int paymentId){
+    public ResponseEntity<?> checkout(@RequestHeader("Authorization") String authorizationHeader, @RequestParam(required = false) @Nullable String courseId, @RequestParam int paymentId){
         try {
-            orderService.checkout(authorizationHeader,paymentId);
+            orderService.checkout(authorizationHeader,courseId,paymentId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Submit successfully");
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

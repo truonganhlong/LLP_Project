@@ -2,6 +2,7 @@ package com.llp.courseservice.services.impl;
 
 import com.llp.courseservice.clients.UserClient;
 import com.llp.courseservice.dtos.Review.ReviewCreateRequest;
+import com.llp.courseservice.dtos.Review.ReviewRatingResponse;
 import com.llp.courseservice.dtos.Review.ReviewResponse;
 import com.llp.courseservice.entities.Course;
 import com.llp.courseservice.entities.Review;
@@ -45,15 +46,24 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewResponse> getAllReviewByCourse(String courseId, Integer pageNo, Integer pageSize) {
+    public ReviewRatingResponse getAllReviewByCourse(String courseId, Integer pageNo, Integer pageSize) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
+            List<ReviewRepository.ReviewData> reviewBase = reviewRepository.getAllReviewByCourse(courseId,null);
             List<ReviewRepository.ReviewData> reviews = reviewRepository.getAllReviewByCourse(courseId,paging);
-            List<ReviewResponse> data = reviews.stream().map(ReviewMapper::convertToResponse).collect(Collectors.toList());
-            for (var review: data) {
+            List<ReviewResponse> reviewResponses = reviews.stream().map(ReviewMapper::convertToResponse).collect(Collectors.toList());
+            for (var review: reviewResponses) {
                 review.setUsername(userClient.getUserInformation(review.getUserId()).getFullname());
                 review.setImageLink(userClient.getUserInformation(review.getUserId()).getImageLink());
             }
+            ReviewRatingResponse data = ReviewRatingResponse.builder()
+                    .reviews(reviewResponses)
+                    .rating5star(reviewRepository.reviewCountFilterByRating(courseId,5)* 100 /reviewBase.size())
+                    .rating4star(reviewRepository.reviewCountFilterByRating(courseId,4)* 100 /reviewBase.size())
+                    .rating3star(reviewRepository.reviewCountFilterByRating(courseId,3)* 100 /reviewBase.size())
+                    .rating2star(reviewRepository.reviewCountFilterByRating(courseId,2)* 100 /reviewBase.size())
+                    .rating1star(reviewRepository.reviewCountFilterByRating(courseId,1)* 100 /reviewBase.size())
+                    .build();
             return data;
         } catch (Exception e){
             throw new InternalServerException("Server Error");

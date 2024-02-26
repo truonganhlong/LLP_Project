@@ -30,4 +30,10 @@ public interface CourseService {
 
     CourseDetailResponse getCourseDetail(String courseId, String authorizationHeader);
     void updateSaleNum(String courseId);
+    List<CourseCardResponse> getByCategoryByLastViewCourse(String authorizationHeader, Integer pageNo, Integer pageSize);
+    List<CourseCardResponse> getBySubCategoryByLastViewCourse(String authorizationHeader, Integer pageNo, Integer pageSize);
+    List<CourseCardResponse> getByTopicByLastViewCourse(String authorizationHeader, Integer pageNo, Integer pageSize);
+    List<CourseCardResponse> getAllCourseByCreatedBy(int createdBy, Integer pageNo, Integer pageSize);
+    CoursePreviewResponse getAllCoursePreview(String courseId);
+
 }

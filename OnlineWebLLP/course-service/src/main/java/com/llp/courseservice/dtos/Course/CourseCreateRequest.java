@@ -38,8 +38,6 @@ public class CourseCreateRequest {
     @JsonProperty(required = true)
     private MultipartFile imageLink;
     @JsonProperty(required = true)
-    private String promoVideoLink;
-    @JsonProperty(required = true)
     private double price;
     @JsonProperty(required = true)
     private Long createdBy;

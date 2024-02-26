@@ -31,9 +31,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -250,10 +253,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private void insertImage(User user, MultipartFile imageLink) {
-        Path filePath = Paths.get(root, directory, imageLink.getOriginalFilename());
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        String formattedDateTime = now.format(formatter);
+        String randomUUID = UUID.randomUUID().toString().replace("-", "");
+        String originalFilename = imageLink.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newFilename = formattedDateTime + randomUUID + fileExtension;
+        Path filePath = Paths.get(root, directory, newFilename);
         try {
             imageLink.transferTo(new File(String.valueOf(filePath)));
-            user.setImageLink(imageLink.getOriginalFilename());
+            user.setImageLink(newFilename);
             userRepository.save(user);
         } catch (IOException e) {
             throw new NotFoundException("Not found file");

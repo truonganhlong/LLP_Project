@@ -27,7 +27,6 @@ public class CourseDetailResponse {
     private List<String> requirement;
     private List<String> target;
     private String imageLink;
-    private String promoVideoLink;
     private double rating;
     private int ratingNum;
     private int saleNum;

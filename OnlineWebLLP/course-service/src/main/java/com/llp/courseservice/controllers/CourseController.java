@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
@@ -231,6 +230,8 @@ public class CourseController {
         try {
             var data = courseService.getCourseDetail(courseId,authorizationHeader);
             return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -242,6 +243,77 @@ public class CourseController {
         try {
             courseService.updateSaleNum(courseId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Update successfully");
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 107: get courses by last view course and it's category")
+    @RequestMapping(value = "/user/getByCategoryByLastViewCourse", method = RequestMethod.GET)
+    public ResponseEntity<?> getByCategoryByLastViewCourse(@RequestHeader(name = "Authorization") String authorizationHeader,
+                                                           @RequestParam(defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(defaultValue = "5") Integer pageSize){
+        try {
+            var data = courseService.getByCategoryByLastViewCourse(authorizationHeader,pageNo,pageSize);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 108: get courses by last view course and it's subcategory")
+    @RequestMapping(value = "/user/getBySubCategoryByLastViewCourse", method = RequestMethod.GET)
+    public ResponseEntity<?> getBySubCategoryByLastViewCourse(@RequestHeader(name = "Authorization") String authorizationHeader,
+                                                              @RequestParam(defaultValue = "0") Integer pageNo,
+                                                              @RequestParam(defaultValue = "5") Integer pageSize){
+        try {
+            var data = courseService.getBySubCategoryByLastViewCourse(authorizationHeader,pageNo,pageSize);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 109: get courses by last view course and it's topic")
+    @RequestMapping(value = "/user/getByTopicByLastViewCourse", method = RequestMethod.GET)
+    public ResponseEntity<?> getByTopicByLastViewCourse(@RequestHeader(name = "Authorization") String authorizationHeader,
+                                                        @RequestParam(defaultValue = "0") Integer pageNo,
+                                                        @RequestParam(defaultValue = "5") Integer pageSize){
+        try {
+            var data = courseService.getByTopicByLastViewCourse(authorizationHeader,pageNo,pageSize);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 110: get more course by that teacher")
+    @RequestMapping(value = "/public/getAllCourseByCreatedBy", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCourseByCreatedBy(@RequestParam("createdBy") int createdBy,
+                                                        @RequestParam(defaultValue = "0") Integer pageNo,
+                                                        @RequestParam(defaultValue = "5") Integer pageSize){
+        try {
+            var data = courseService.getAllCourseByCreatedBy(createdBy,pageNo,pageSize);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 111: get preview lecture in course detail page")
+    @RequestMapping(value = "/public/getAllCoursePreview", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCoursePreview(@RequestParam String courseId){
+        try {
+            var data = courseService.getAllCoursePreview(courseId);
+            return ResponseEntity.ok(data);
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

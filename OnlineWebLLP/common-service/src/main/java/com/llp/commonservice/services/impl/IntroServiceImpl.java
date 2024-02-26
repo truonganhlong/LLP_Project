@@ -20,8 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -171,10 +174,17 @@ public class IntroServiceImpl implements IntroService {
         return data;
     }
     private void insertImage(Intro intro, MultipartFile imageLink) {
-        Path filePath = Paths.get(root, directory, imageLink.getOriginalFilename());
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        String formattedDateTime = now.format(formatter);
+        String randomUUID = UUID.randomUUID().toString().replace("-", "");
+        String originalFilename = imageLink.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String newFilename = formattedDateTime + randomUUID + fileExtension;
+        Path filePath = Paths.get(root, directory, newFilename);
         try {
             imageLink.transferTo(new File(String.valueOf(filePath)));
-            intro.setImageLink(imageLink.getOriginalFilename());
+            intro.setImageLink(newFilename);
             introRepository.save(intro);
         } catch (IOException e) {
             throw new NotFoundException("Not found file");

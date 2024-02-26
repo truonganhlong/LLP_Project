@@ -13,6 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 public interface LastViewCourseRepository extends JpaRepository<LastViewCourse, LastViewCourseKey> {
     @Transactional
     @Modifying
-    @Query(value = "INSERT INTO lastViewCourse (courseId,userId) VALUES(:courseId,:userId)", nativeQuery = true)
+    @Query(value = "INSERT INTO dbo.lastViewCourse (courseId,userId) VALUES(:courseId,:userId)", nativeQuery = true)
     void create(@Param("courseId") String courseId, @Param("userId") int userId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE dbo.lastViewCourse SET dbo.lastViewCourse.courseId = :courseId WHERE dbo.lastViewCourse.userId = :userId", nativeQuery = true)
+    void update(@Param("courseId") String courseId, @Param("userId") int userId);
+
+    @Query(value = "SELECT dbo.lastViewCourse.courseId FROM dbo.lastViewCourse WHERE dbo.lastViewCourse.userId = :userId", nativeQuery = true)
+    String getLastViewCourse(@Param("userId") int userId);
 }

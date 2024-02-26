@@ -64,10 +64,9 @@ public class WishlistAndCartServiceImpl implements WishlistAndCartService {
     public void removeFromWishlistAndCart(int userId, String courseId) {
         try {
             WishlistAndCart wishlistAndCart = wishlistAndCartRepository.getById(courseId,userId);
-            if(Objects.isNull(wishlistAndCart)){
-                throw new NotFoundException("Not found in database");
+            if(!Objects.isNull(wishlistAndCart)){
+                wishlistAndCartRepository.delete(wishlistAndCart);
             }
-            wishlistAndCartRepository.delete(wishlistAndCart);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){
