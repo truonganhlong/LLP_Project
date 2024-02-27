@@ -394,7 +394,7 @@ public class CourseServiceImpl implements CourseService {
                     section.setDuration(secondsToMinutes(sectionDuration));
                 }
             }
-            if(!authorizationHeader.isEmpty()){
+            if(authorizationHeader != null){
                 //add last view course
                 String lastViewCourseId = lastViewCourseRepository.getLastViewCourse(userClient.returnUserId(authorizationHeader));
                 if(lastViewCourseId == null){

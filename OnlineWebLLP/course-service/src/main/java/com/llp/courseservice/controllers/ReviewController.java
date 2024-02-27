@@ -42,7 +42,7 @@ public class ReviewController {
     }
 
     @Operation(summary = "Api 102: create review")
-    @RequestMapping(value="/user", method = RequestMethod.POST)
+    @RequestMapping(value="/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> create(@RequestHeader("Authorization") String authorizationHeader, @RequestBody ReviewCreateRequest request){
         try {
             reviewService.create(authorizationHeader,request);

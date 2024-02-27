@@ -40,8 +40,8 @@ public class RegisterInstructorController {
             if (authentication != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
                 int userId = user.getId().intValue();
-                registerInstructorService.fillForm(userId, requests);
-                return ResponseEntity.status(HttpStatus.CREATED).body("Submit successfully");
+                var data = registerInstructorService.fillForm(userId, requests);
+                return ResponseEntity.ok(data);
             }
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

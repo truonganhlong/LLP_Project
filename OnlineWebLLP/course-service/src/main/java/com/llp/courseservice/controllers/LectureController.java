@@ -11,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/course/lecture")
@@ -30,6 +27,28 @@ public class LectureController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Created successfully");
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 116: get lecture by id")
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getById(@PathVariable int id, @RequestHeader(name = "Authorization") String authorizationHeader, @RequestParam String courseId){
+        try {
+            var data = lectureService.getById(id,authorizationHeader,courseId);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 117: get lecture studied in homepage after login")
+    @RequestMapping(value = "/user/getAllLectureStudied", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllLectureStudied(@RequestHeader(name = "Authorization") String authorizationHeader){
+        try {
+            var data = lectureService.getAllLectureStudied(authorizationHeader);
+            return ResponseEntity.ok(data);
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
