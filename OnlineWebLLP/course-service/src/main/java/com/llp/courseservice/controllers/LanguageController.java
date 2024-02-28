@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/language")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class LanguageController {
     private final LanguageService languageService;
     @Operation(summary = "Api 22: get all language")

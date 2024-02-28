@@ -13,10 +13,10 @@ import java.util.UUID;
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Tag getById(int id);
 
-    @Query(value = "SELECT dbo.tag.name\n" +
-            "FROM     dbo.course INNER JOIN\n" +
-            "         dbo.courseTag ON dbo.course.id = dbo.courseTag.courseId INNER JOIN\n" +
-            "         dbo.tag ON dbo.courseTag.tagId = dbo.tag.id\n" +
-            "WHERE  dbo.course.id = :courseId", nativeQuery = true)
-    List<String> getTagNameByCourseId(@Param("courseId") UUID courseId);
+    @Query(value = "SELECT tag.name\n" +
+            "FROM     course INNER JOIN\n" +
+            "         courseTag ON course.id = courseTag.courseId INNER JOIN\n" +
+            "         tag ON courseTag.tagId = tag.id\n" +
+            "WHERE  course.id = :courseId", nativeQuery = true)
+    List<String> getTagNameByCourseId(@Param("courseId") String courseId);
 }

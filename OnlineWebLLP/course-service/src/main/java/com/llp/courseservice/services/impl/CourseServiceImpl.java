@@ -69,7 +69,7 @@ public class CourseServiceImpl implements CourseService {
                 throw new NotFoundException("Not found in database");
             }
             CourseOverviewResponse data = CourseMapper.convertToOverviewResponse(courseOverview);
-            data.setTag(tagRepository.getTagNameByCourseId(data.getId()));
+            data.setTag(tagRepository.getTagNameByCourseId(String.valueOf(data.getId())));
             return data;
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
@@ -369,7 +369,7 @@ public class CourseServiceImpl implements CourseService {
                     .instructorResponse(instructor)
                     .language(languageRepository.getById(courseDetailJpql.getLanguageId()).getName())
                     .level(levelRepository.getById(courseDetailJpql.getLevelId()).getName())
-                    .tag(tagRepository.getTagNameByCourseId(courseDetailJpql.getId()))
+                    .tag(tagRepository.getTagNameByCourseId(String.valueOf(courseDetailJpql.getId())))
                     .build();
             List<SectionDetailResponse> sections = sectionService.getAllSectionByCourse(String.valueOf(data.getId()));
             data.setSectionDetailResponses(sections);

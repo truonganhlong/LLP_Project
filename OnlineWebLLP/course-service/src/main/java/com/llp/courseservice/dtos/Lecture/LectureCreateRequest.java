@@ -11,7 +11,7 @@ import lombok.*;
 public class LectureCreateRequest {
     @JsonProperty(required = true)
     private String name;
-    @JsonProperty(required = true)
+    @JsonProperty
     private String goal;
     @JsonProperty(required = true)
     private String link;

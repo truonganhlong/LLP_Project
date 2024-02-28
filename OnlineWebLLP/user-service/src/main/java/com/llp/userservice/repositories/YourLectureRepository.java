@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface YourLectureRepository extends JpaRepository<YourLecture, YourLectureKey> {
-    @Query(value = "SELECT COUNT(*) FROM dbo.yourLecture WHERE dbo.yourLecture.userId = :userId AND dbo.yourLecture.courseId = :courseId", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM yourLecture WHERE yourLecture.userId = :userId AND yourLecture.courseId = :courseId", nativeQuery = true)
     long countByUserAndCourse(@Param("userId") int userId, @Param("courseId") String courseId);
 
     @Transactional
@@ -23,7 +23,7 @@ public interface YourLectureRepository extends JpaRepository<YourLecture, YourLe
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE dbo.yourLecture SET dbo.yourLecture.lectureId = :lectureId WHERE dbo.yourLecture.userId = :userId AND dbo.yourLecture.courseId = :courseId", nativeQuery = true)
+    @Query(value = "UPDATE yourLecture SET yourLecture.lectureId = :lectureId WHERE yourLecture.userId = :userId AND yourLecture.courseId = :courseId", nativeQuery = true)
     void update(@Param("userId") int userId, @Param("courseId") String courseId, @Param("lectureId") int lectureId);
 
     @Query(value = "SELECT yl FROM YourLecture yl WHERE yl.id.userId = :userId")

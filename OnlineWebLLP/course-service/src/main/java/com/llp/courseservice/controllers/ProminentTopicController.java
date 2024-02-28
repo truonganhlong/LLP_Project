@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/prominentTopic")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProminentTopicController {
     private final ProminentTopicService prominentTopicService;
     @Operation(summary = "Api 32: get all prominent topics in admin side")

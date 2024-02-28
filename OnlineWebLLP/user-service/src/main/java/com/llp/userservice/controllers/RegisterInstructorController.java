@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/user/registerInstructor")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('USER')")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RegisterInstructorController {
     private final RegisterInstructorService registerInstructorService;
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user/wac")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('USER')")
+@CrossOrigin(origins = "http://localhost:3000")
 public class WishlistAndCartController {
     private final WishlistAndCartService wishlistAndCartService;
 

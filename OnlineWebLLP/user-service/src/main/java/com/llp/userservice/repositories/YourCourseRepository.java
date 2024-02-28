@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface YourCourseRepository extends JpaRepository<YourCourse, YourCourseKey> {
-    @Query(value = "SELECT COUNT(*) FROM dbo.yourCourse WHERE dbo.yourCourse.courseId = :courseId", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM yourCourse WHERE yourCourse.courseId = :courseId", nativeQuery = true)
     long countByCourseId(@Param("courseId") String courseId);
 
     @Transactional

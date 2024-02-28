@@ -47,7 +47,7 @@ public class LectureServiceImpl implements LectureService {
                     .section(sectionRepository.getById(sectionId))
                     .build();
             lectureRepository.save(lecture);
-            lectureRepository.updateCourseDuration(lecture.getDuration(), String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()));
+            lectureRepository.updateCourseDuration(lecture.getDuration(), String.valueOf(sectionRepository.getById(sectionId).getCourse().getId()), LocalDateTime.now());
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
         } catch (Exception e){

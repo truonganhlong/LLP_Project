@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/tag")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class TagController {
     private final TagService tagService;
     @Operation(summary = "Api 46: get all tag in admin side")

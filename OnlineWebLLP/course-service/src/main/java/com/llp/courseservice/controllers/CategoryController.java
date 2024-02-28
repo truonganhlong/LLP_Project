@@ -12,14 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/course/category")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CategoryController {
     private final CategoryService categoryService;
     @Operation(summary = "Api 9: get all category in admin side")

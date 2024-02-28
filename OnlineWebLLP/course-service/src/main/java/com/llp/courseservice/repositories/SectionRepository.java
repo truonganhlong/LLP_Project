@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface SectionRepository extends JpaRepository<Section, Long> {
     Section getById(int id);
-    @Query(value = "SELECT * FROM dbo.section WHERE dbo.section.courseId = :courseId", nativeQuery = true)
+    @Query(value = "SELECT * FROM section WHERE section.courseId = :courseId", nativeQuery = true)
     List<Section> getAllByCourse(@Param("courseId") String courseId);
 }

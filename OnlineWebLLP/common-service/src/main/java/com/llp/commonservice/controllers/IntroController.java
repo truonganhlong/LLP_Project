@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/common/intro")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class IntroController {
     private final IntroService introService;
     @Operation(summary = "Api 1: get full intro in admin side")

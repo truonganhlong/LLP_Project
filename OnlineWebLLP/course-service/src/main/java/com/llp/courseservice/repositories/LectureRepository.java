@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,13 +16,13 @@ import java.util.UUID;
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
     Lecture getById(int id);
 
-    @Query(value = "SELECT * FROM dbo.lecture WHERE dbo.lecture.sectionId = :sectionId", nativeQuery = true)
+    @Query(value = "SELECT * FROM lecture WHERE lecture.sectionId = :sectionId", nativeQuery = true)
     List<Lecture> getAllBySection(@Param("sectionId") int sectionId);
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE dbo.course SET dbo.course.duration = dbo.course.duration + :duration WHERE dbo.course.id = :courseId", nativeQuery = true)
-    void updateCourseDuration(@Param("duration") int duration, @Param("courseId") String courseId);
+    @Query(value = "UPDATE course SET course.duration = course.duration + :duration, course.updatedAt = :updatedAt WHERE course.id = :courseId", nativeQuery = true)
+    void updateCourseDuration(@Param("duration") int duration, @Param("courseId") String courseId, @Param("updatedAt")LocalDateTime updatedAt);
 
     @Query(value = "SELECT l FROM Lecture l\n" +
             "JOIN l.section s\n" +

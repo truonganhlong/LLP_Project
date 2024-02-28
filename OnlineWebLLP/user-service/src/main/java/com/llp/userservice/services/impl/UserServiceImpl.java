@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .verified(true)
+                    .imageLink("default-avatar.png")
                     .participateDay(LocalDate.now())
                     .build();
             userRepository.save(user);
@@ -129,6 +130,7 @@ public class UserServiceImpl implements UserService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .verified(true)
+                    .imageLink("default-avatar.png")
                     .participateDay(LocalDate.now())
                     .build();
             userRepository.save(user);

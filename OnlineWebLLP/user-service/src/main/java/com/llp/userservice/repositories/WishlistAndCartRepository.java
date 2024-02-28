@@ -23,20 +23,20 @@ public interface WishlistAndCartRepository extends JpaRepository<WishlistAndCart
     @Query(value = "INSERT INTO wishlistAndCart (courseId,userId,isWishlist,isCart) VALUES(:courseId,:userId,0,1)", nativeQuery = true)
     void addToCart(@Param("courseId") String courseId, @Param("userId") int userId);
 
-    @Query(value = "SELECT dbo.wishlistAndCart.*\n" +
-            "FROM     dbo.wishlistAndCart\n" +
-            "WHERE dbo.wishlistAndCart.courseId = :courseId AND dbo.wishlistAndCart.userId = :userId", nativeQuery = true)
+    @Query(value = "SELECT wishlistAndCart.*\n" +
+            "FROM     wishlistAndCart\n" +
+            "WHERE wishlistAndCart.courseId = :courseId AND wishlistAndCart.userId = :userId", nativeQuery = true)
     WishlistAndCart getById(@Param("courseId") String courseId, @Param("userId") int userId);
 
-    @Query(value = "SELECT dbo.wishlistAndCart.*\n" +
-            "FROM     dbo.wishlistAndCart\n" +
-            "WHERE dbo.wishlistAndCart.userId = :userId\n" +
-            "AND dbo.wishlistAndCart.isWishlist = 1", nativeQuery = true)
+    @Query(value = "SELECT wishlistAndCart.*\n" +
+            "FROM     wishlistAndCart\n" +
+            "WHERE wishlistAndCart.userId = :userId\n" +
+            "AND wishlistAndCart.isWishlist = 1", nativeQuery = true)
     List<WishlistAndCart> getWishlist(@Param("userId") int userId);
 
-    @Query(value = "SELECT dbo.wishlistAndCart.*\n" +
-            "FROM     dbo.wishlistAndCart\n" +
-            "WHERE dbo.wishlistAndCart.userId = :userId\n" +
-            "AND dbo.wishlistAndCart.isCart = 1", nativeQuery = true)
+    @Query(value = "SELECT wishlistAndCart.*\n" +
+            "FROM     wishlistAndCart\n" +
+            "WHERE wishlistAndCart.userId = :userId\n" +
+            "AND wishlistAndCart.isCart = 1", nativeQuery = true)
     List<WishlistAndCart> getCart(@Param("userId") int userId);
 }

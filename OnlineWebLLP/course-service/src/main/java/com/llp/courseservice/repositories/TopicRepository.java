@@ -15,13 +15,13 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
         String getName();
     }
     Topic getById(int id);
-    @Query(value = "SELECT dbo.topic.*\n" +
-            "FROM     dbo.topic\n" +
-            "WHERE dbo.topic.subCategoryId = :subCategoryId", nativeQuery = true)
+    @Query(value = "SELECT topic.*\n" +
+            "FROM     topic\n" +
+            "WHERE topic.subCategoryId = :subCategoryId", nativeQuery = true)
     List<Topic> getByAdminFilterBySubCategory(@Param("subCategoryId") int subCategoryId);
-    @Query(value = "SELECT dbo.topic.id, dbo.topic.name\n" +
-            "FROM     dbo.topic\n" +
-            "WHERE dbo.topic.subCategoryId = :subCategoryId AND dbo.topic.status = 1", nativeQuery = true)
+    @Query(value = "SELECT topic.id, topic.name\n" +
+            "FROM     topic\n" +
+            "WHERE topic.subCategoryId = :subCategoryId AND topic.status = 1", nativeQuery = true)
     List<TopicByName> getByUserFilterBySubCategory(@Param("subCategoryId") int subCategoryId);
 
 }

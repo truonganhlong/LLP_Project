@@ -11,14 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/course/section")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class SectionController {
     private final SectionService sectionService;
     @Operation(summary = "Api 74: create section in course")

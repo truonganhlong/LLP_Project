@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/subCategory")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubCategoryController {
     private final SubCategoryService subCategoryService;
     @Operation(summary = "Api 38: get all sub category in admin side")

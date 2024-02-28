@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/course")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
     private final CourseService courseService;
     @Operation(summary = "Api 17: get course's overview which is the course's data when user hover in course")

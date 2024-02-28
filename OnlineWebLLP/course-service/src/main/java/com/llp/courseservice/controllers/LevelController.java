@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/course/level")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class LevelController {
     private final LevelService levelService;
     @Operation(summary = "Api 27: get all level")

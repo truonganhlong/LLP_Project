@@ -15,12 +15,12 @@ public interface SubCategoryRepository extends JpaRepository<SubCategory, Long> 
         String getName();
     }
     SubCategory getById(int id);
-    @Query(value = "SELECT dbo.subCategory.*\n" +
-            "FROM     dbo.subCategory\n" +
-            "WHERE dbo.subCategory.categoryId = :categoryId", nativeQuery = true)
+    @Query(value = "SELECT subCategory.*\n" +
+            "FROM     subCategory\n" +
+            "WHERE subCategory.categoryId = :categoryId", nativeQuery = true)
     List<SubCategory> getByAdminFilterByCategory(@Param("categoryId") int categoryId);
-    @Query(value = "SELECT dbo.subCategory.id, dbo.subCategory.name\n" +
-            "FROM     dbo.subCategory\n" +
-            "WHERE dbo.subCategory.categoryId = :categoryId AND dbo.subCategory.status = 1", nativeQuery = true)
+    @Query(value = "SELECT subCategory.id, subCategory.name\n" +
+            "FROM     subCategory\n" +
+            "WHERE subCategory.categoryId = :categoryId AND subCategory.status = 1", nativeQuery = true)
     List<SubCategoryByName> getByUserFilterByCategory(@Param("categoryId") int categoryId);
 }

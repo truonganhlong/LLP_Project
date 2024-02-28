@@ -16,6 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/course/discount")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class DiscountController {
     private final DiscountService discountService;
     @Operation(summary = "Api 18: get discount of course by courseId")

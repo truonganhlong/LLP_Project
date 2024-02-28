@@ -28,19 +28,19 @@ public interface ReviewRepository extends PagingAndSortingRepository<Review, Rev
 
     }
 
-    @Query(value = "SELECT dbo.review.*, dbo.course.name\n" +
-            "FROM     dbo.review INNER JOIN\n" +
-            "dbo.course ON dbo.review.courseId = dbo.course.id WHERE dbo.review.isProminent = 1", nativeQuery = true)
+    @Query(value = "SELECT review.*, course.name\n" +
+            "FROM     review INNER JOIN\n" +
+            "course ON review.courseId = course.id WHERE review.isProminent = 1", nativeQuery = true)
     List<ReviewData> getAllProminentReview(Pageable pageable);
 
-    @Query(value = "SELECT dbo.review.*, dbo.course.name\n" +
-            "FROM     dbo.review INNER JOIN\n" +
-            "dbo.course ON dbo.review.courseId = dbo.course.id WHERE dbo.course.id = :courseId", nativeQuery = true)
+    @Query(value = "SELECT review.*, course.name\n" +
+            "FROM     review INNER JOIN\n" +
+            "course ON review.courseId = course.id WHERE course.id = :courseId", nativeQuery = true)
     List<ReviewData> getAllReviewByCourse(@Param("courseId") String courseId, Pageable pageable);
 
-    @Query(value = "SELECT dbo.review.*, dbo.course.name\n" +
-            "FROM     dbo.review INNER JOIN\n" +
-            "dbo.course ON dbo.review.courseId = dbo.course.id", nativeQuery = true)
+    @Query(value = "SELECT review.*, course.name\n" +
+            "FROM     review INNER JOIN\n" +
+            "course ON review.courseId = course.id", nativeQuery = true)
     List<ReviewData> getAllReview(Pageable pageable);
     @Transactional
     @Modifying
@@ -48,9 +48,9 @@ public interface ReviewRepository extends PagingAndSortingRepository<Review, Rev
     void create(@Param("courseId") String courseId, @Param("userId") int userId, @Param("content") String content, @Param("rating") int rating, @Param("createdAt") LocalDateTime createdAt);
     @Transactional
     @Modifying
-    @Query(value = "UPDATE dbo.review SET dbo.review.isProminent = 1 WHERE dbo.review.courseId = :courseId AND dbo.review.userId = :userId", nativeQuery = true)
+    @Query(value = "UPDATE review SET review.isProminent = 1 WHERE review.courseId = :courseId AND review.userId = :userId", nativeQuery = true)
     void updateReviewToProminent(@Param("courseId") String courseId, @Param("userId") int userId);
 
-    @Query(value = "SELECT COUNT(*) FROM dbo.review WHERE dbo.review.courseId = :courseId AND dbo.review.rating = :rating", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM review WHERE review.courseId = :courseId AND review.rating = :rating", nativeQuery = true)
     int reviewCountFilterByRating(@Param("courseId") String courseId, @Param("rating") int rating);
 }

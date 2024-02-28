@@ -12,8 +12,8 @@ import java.util.List;
 public interface IntroRepository extends JpaRepository<Intro, Long> {
     Intro getById(int id);
     List<Intro> getAllByIntroMapId(int introMapId);
-    @Query(value = "SELECT dbo.intro.*\n" +
-            "FROM     dbo.intro\n" +
-            "WHERE dbo.intro.introMapId = :introMapId AND dbo.intro.status = 1", nativeQuery = true)
+    @Query(value = "SELECT *\n" +
+            "FROM     intro\n" +
+            "WHERE intro.introMapId = :introMapId AND intro.status = 1", nativeQuery = true)
     List<Intro> getAllByIntroMapIdByUser(@Param("introMapId") int introMapId);
 }
