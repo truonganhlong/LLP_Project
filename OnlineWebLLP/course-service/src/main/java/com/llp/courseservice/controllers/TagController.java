@@ -78,4 +78,26 @@ public class TagController {
         }
     }
 
+    @Operation(summary = "Api 119: update bestseller tag")
+    @RequestMapping(value = "/public/updateBestsellerTag", method = RequestMethod.POST)
+    public ResponseEntity<?> updateBestsellerTag(){
+        try {
+            tagService.updateBestsellerTag();
+            return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 120: update highest rated tag")
+    @RequestMapping(value = "/public/updateHighestRatedTag", method = RequestMethod.POST)
+    public ResponseEntity<?> updateHighestRatedTag(){
+        try {
+            tagService.updateHighestRatedTag();
+            return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

@@ -35,7 +35,6 @@ public interface CourseService {
     List<CourseCardResponse> getByTopicByLastViewCourse(String authorizationHeader, Integer pageNo, Integer pageSize);
     List<CourseCardResponse> getAllCourseByCreatedBy(int createdBy, Integer pageNo, Integer pageSize);
     CoursePreviewResponse getAllCoursePreview(String courseId);
-
     List<CourseCardResponse> getAllCourseCardNotApprove(Integer pageNo, Integer pageSize);
 
 }

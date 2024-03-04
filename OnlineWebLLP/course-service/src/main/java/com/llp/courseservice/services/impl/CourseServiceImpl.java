@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class CourseServiceImpl implements CourseService {
     private static final String root = System.getProperty("user.dir") + "/shared-project/src/main/resources/static/";
     private static final String directory = "images/course/";
     private final CourseRepository courseRepository;
+    private final CourseTagRepository courseTagRepository;
     private final TagRepository tagRepository;
     private final DiscountService discountService;
     private final LanguageRepository languageRepository;
@@ -266,6 +268,7 @@ public class CourseServiceImpl implements CourseService {
             for (var topicId: request.getTopic()) {
                 courseTopicRepository.create(String.valueOf(course.getId()), topicId);
             }
+            courseTagRepository.createNewTag(String.valueOf(course.getId()), LocalDate.now());
             return String.valueOf(course.getId());
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
@@ -374,10 +377,12 @@ public class CourseServiceImpl implements CourseService {
             List<SectionDetailResponse> sections = sectionService.getAllSectionByCourse(String.valueOf(data.getId()));
             data.setSectionDetailResponses(sections);
             data.setSectionNum(sections.size());
+            int lectureNum = 0;
             for (var section:sections) {
                 if(authorizationHeader == null || userClient.isHaveAuthenticationCourse(authorizationHeader, String.valueOf(data.getId())) == false){
                     section.setLectureDetailBeforePurchasedResponses(lectureService.getAllLectureBySectionBeforePurchased(section.getId().intValue()));
                     section.setLectureNum(lectureService.getAllLectureBySectionBeforePurchased(section.getId().intValue()).size());
+                    lectureNum += section.getLectureNum();
                     int sectionDuration = 0;
                     for (var lecture:section.getLectureDetailBeforePurchasedResponses()) {
                         sectionDuration += lecture.getDuration();
@@ -387,6 +392,7 @@ public class CourseServiceImpl implements CourseService {
                 else {
                     section.setLectureDetailAfterPurchasedResponses(lectureService.getAllLectureBySectionAfterPurchased(section.getId().intValue()));
                     section.setLectureNum(lectureService.getAllLectureBySectionAfterPurchased(section.getId().intValue()).size());
+                    lectureNum += section.getLectureNum();
                     int sectionDuration = 0;
                     for (var lecture:section.getLectureDetailAfterPurchasedResponses()) {
                         sectionDuration += lecture.getDuration();
@@ -403,6 +409,7 @@ public class CourseServiceImpl implements CourseService {
                     lastViewCourseRepository.update(String.valueOf(data.getId()), userClient.returnUserId(authorizationHeader));
                 }
             }
+            data.setLectureNum(lectureNum);
             return data;
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());

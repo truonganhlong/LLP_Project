@@ -37,6 +37,10 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
         int getRatingNum();
         double getPrice();
     }
+    @Query(value = "SELECT c FROM Course c ORDER BY c.saleNum DESC")
+    List<Course> getAllOrderBySaleNum(Pageable pageable);
+    @Query(value = "SELECT c FROM Course c ORDER BY c.rating DESC")
+    List<Course> getAllOrderByRating(Pageable pageable);
     @Query(value = "SELECT c FROM Course c WHERE c.id = :id")
     Course getById(@Param("id") UUID id);
     @Query(value = "SELECT course.id, course.name, course.updatedAt, course.duration, level.name AS level, course.overview, course.target\n" +

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.llp.courseservice.entities.keys.CourseTagKey;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -25,4 +29,6 @@ public class CourseTag {
     @JoinColumn(name = "courseId", nullable = false)
     @JsonIgnore
     private Course course;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createdAt;
 }

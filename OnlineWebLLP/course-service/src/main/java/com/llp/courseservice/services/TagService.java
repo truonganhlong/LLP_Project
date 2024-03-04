@@ -14,4 +14,7 @@ public interface TagService {
     void create(TagCreateRequest request);
     void update(int id, TagUpdateRequest request);
     void delete(int id);
+
+    void updateBestsellerTag();
+    void updateHighestRatedTag();
 }
