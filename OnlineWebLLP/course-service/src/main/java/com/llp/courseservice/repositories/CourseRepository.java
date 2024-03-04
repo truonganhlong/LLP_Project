@@ -146,4 +146,14 @@ public interface CourseRepository extends PagingAndSortingRepository<Course, UUI
             "JOIN t.subCategory sc\n" +
             "WHERE c.createdBy = :createdBy AND c.status = true")
     List<CourseCardJpql> getAllCourseByCreatedBy(@Param("createdBy") int createdBy, Pageable pageable);
+
+    @Query("SELECT new com.llp.courseservice.dtos.Course.CourseCardJpql(c.id, c.imageLink, c.name, c.createdBy, c.rating, c.ratingNum, c.price, c.createdAt, c.duration, t.id, sc.id, le.id, la.id) " +
+            "FROM Course c\n" +
+            "JOIN c.level le\n" +
+            "JOIN c.language la\n" +
+            "JOIN c.courseTopics ct\n" +
+            "JOIN ct.topic t\n" +
+            "JOIN t.subCategory sc\n" +
+            "WHERE c.status = false")
+    List<CourseCardJpql> getAllCourseCardNotApprove(Pageable pageable);
 }

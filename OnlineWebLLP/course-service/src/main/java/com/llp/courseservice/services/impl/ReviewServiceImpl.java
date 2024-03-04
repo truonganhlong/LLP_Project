@@ -56,15 +56,20 @@ public class ReviewServiceImpl implements ReviewService {
                 review.setUsername(userClient.getUserInformation(review.getUserId()).getFullname());
                 review.setImageLink(userClient.getUserInformation(review.getUserId()).getImageLink());
             }
-            ReviewRatingResponse data = ReviewRatingResponse.builder()
-                    .reviews(reviewResponses)
-                    .rating5star(reviewRepository.reviewCountFilterByRating(courseId,5)* 100 /reviewBase.size())
-                    .rating4star(reviewRepository.reviewCountFilterByRating(courseId,4)* 100 /reviewBase.size())
-                    .rating3star(reviewRepository.reviewCountFilterByRating(courseId,3)* 100 /reviewBase.size())
-                    .rating2star(reviewRepository.reviewCountFilterByRating(courseId,2)* 100 /reviewBase.size())
-                    .rating1star(reviewRepository.reviewCountFilterByRating(courseId,1)* 100 /reviewBase.size())
-                    .build();
-            return data;
+            if(reviewBase.size() != 0){
+                ReviewRatingResponse data = ReviewRatingResponse.builder()
+                        .reviews(reviewResponses)
+                        .rating5star(reviewRepository.reviewCountFilterByRating(courseId,5)* 100 /reviewBase.size())
+                        .rating4star(reviewRepository.reviewCountFilterByRating(courseId,4)* 100 /reviewBase.size())
+                        .rating3star(reviewRepository.reviewCountFilterByRating(courseId,3)* 100 /reviewBase.size())
+                        .rating2star(reviewRepository.reviewCountFilterByRating(courseId,2)* 100 /reviewBase.size())
+                        .rating1star(reviewRepository.reviewCountFilterByRating(courseId,1)* 100 /reviewBase.size())
+                        .build();
+                return data;
+            } else {
+                return null;
+            }
+
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }

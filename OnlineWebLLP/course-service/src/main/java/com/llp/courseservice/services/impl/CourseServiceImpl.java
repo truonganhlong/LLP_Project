@@ -527,6 +527,23 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Override
+    public List<CourseCardResponse> getAllCourseCardNotApprove(Integer pageNo, Integer pageSize) {
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize);
+            List<CourseCardJpql> courseCards = courseRepository.getAllCourseCardNotApprove(paging);
+            List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardJpqlResponse).collect(Collectors.toList());
+            for (var courseCardResponse:courseCardResponses) {
+                InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                courseCardResponse.setInstructor(instructor.getFullname());
+                courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
+            }
+            return courseCardResponses;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
     // ----------------------------------------------------------------------------------------------------------------------
     private List<CourseCardResponse> filterCourse(CourseFilter filter, List<CourseCardJpql> courseCards) {
         if(!Objects.isNull(filter)){

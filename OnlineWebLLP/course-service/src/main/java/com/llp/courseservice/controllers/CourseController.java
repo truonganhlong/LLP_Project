@@ -320,4 +320,16 @@ public class CourseController {
         }
     }
 
+    @Operation(summary = "Api 118: get course which not approve yet in admin side")
+    @RequestMapping(value = "/admin/getAllCourseCardNotApprove", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCourseCardNotApprove(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                        @RequestParam(defaultValue = "10") Integer pageSize){
+        try {
+            var data = courseService.getAllCourseCardNotApprove(pageNo,pageSize);
+            return ResponseEntity.ok(data);
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }
