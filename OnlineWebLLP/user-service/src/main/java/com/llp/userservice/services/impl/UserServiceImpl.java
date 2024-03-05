@@ -33,10 +33,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -249,6 +246,44 @@ public class UserServiceImpl implements UserService {
             return UserMapper.convertToUserResponse(user);
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public List<InstructorResponse> getPopularInstructorByCategory(int categoryId) {
+        try {
+            List<Integer> userIds = courseClient.getAllTeacherByCategory(categoryId);
+            List<InstructorResponse> data = new ArrayList<>();
+            for (var userId:userIds) {
+                data.add(getInstructorInformation(userId));
+            }
+            // Sort the list based on the rating in descending order
+            Collections.sort(data, Comparator.comparing(InstructorResponse::getRating, Comparator.reverseOrder()));
+
+            // Get the top 6 users with the highest ratings
+            List<InstructorResponse> top6Instructor = data.subList(0, Math.min(6, data.size()));
+            return data;
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public List<InstructorResponse> getPopularInstructorBySubCategory(int subCategoryId) {
+        try {
+            List<Integer> userIds = courseClient.getAllTeacherBySubCategory(subCategoryId);
+            List<InstructorResponse> data = new ArrayList<>();
+            for (var userId:userIds) {
+                data.add(getInstructorInformation(userId));
+            }
+            // Sort the list based on the rating in descending order
+            Collections.sort(data, Comparator.comparing(InstructorResponse::getRating, Comparator.reverseOrder()));
+
+            // Get the top 6 instructors with the highest ratings
+            List<InstructorResponse> top6Instructor = data.subList(0, Math.min(6, data.size()));
+            return data;
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }

@@ -21,7 +21,7 @@ public interface CourseService {
     void updateStatus(String id);
     void delete(String id);
     List<CourseCardResponse> searchCourseByName(String keyword, Integer pageNo, Integer pageSize, String sortBy, CourseFilter filter);
-    String create(CourseCreateRequest request);
+    String create(String authorizationHeader, CourseCreateRequest request);
     //void updateDuration(String id, int duration);
 
     List<CourseTeacherResponse> getByTeacher(int createdBy);

@@ -11,6 +11,7 @@ import com.llp.courseservice.dtos.SubCategory.SubCategoryUserResponse;
 import com.llp.courseservice.dtos.Topic.TopicNameResponse;
 import com.llp.courseservice.entities.Course;
 import com.llp.courseservice.entities.Lecture;
+import com.llp.courseservice.entities.Specialized;
 import com.llp.courseservice.mappers.CourseMapper;
 import com.llp.courseservice.mappers.LectureMapper;
 import com.llp.courseservice.repositories.*;
@@ -62,6 +63,7 @@ public class CourseServiceImpl implements CourseService {
     private final SectionService sectionService;
     private final LectureService lectureService;
     private final LastViewCourseRepository lastViewCourseRepository;
+    private final SpecializedRepository specializedRepository;
     private final UserClient userClient;
     @Override
     public CourseOverviewResponse getCourseOverview(String id) {
@@ -246,8 +248,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public String create(CourseCreateRequest request) {
+    public String create(String authorizationHeader, CourseCreateRequest request) {
         try {
+            int userId = userClient.returnUserId(authorizationHeader);
             ObjectMapper objectMapper = new ObjectMapper();
             Course course = Course.builder()
                     .name(request.getName())
@@ -261,7 +264,7 @@ public class CourseServiceImpl implements CourseService {
                     .price(request.getPrice())
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
-                    .createdBy(request.getCreatedBy())
+                    .createdBy((long) userId)
                     .status(false)
                     .build();
             insertImage(course, request.getImageLink());
@@ -269,6 +272,10 @@ public class CourseServiceImpl implements CourseService {
                 courseTopicRepository.create(String.valueOf(course.getId()), topicId);
             }
             courseTagRepository.createNewTag(String.valueOf(course.getId()), LocalDate.now());
+            Specialized specialized =  specializedRepository.getOne(userId, request.getCategoryId(), request.getSubCategoryId());
+            if(Objects.isNull(specialized)){
+                specializedRepository.create(userId, request.getCategoryId(), request.getSubCategoryId());
+            }
             return String.valueOf(course.getId());
         } catch (NotFoundException e){
             throw new NotFoundException(e.getMessage());

@@ -140,4 +140,32 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @Operation(summary = "Api 123: get popular instructors in category page")
+    @RequestMapping(value = "/public/getPopularInstructorByCategory", method = RequestMethod.GET)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getPopularInstructorByCategory(@RequestParam int categoryId){
+        try {
+            var data = userService.getPopularInstructorByCategory(categoryId);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 124: get popular instructors in subcategory page")
+    @RequestMapping(value = "/public/getPopularInstructorBySubCategory", method = RequestMethod.GET)
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getPopularInstructorBySubCategory(@RequestParam int subCategoryId){
+        try {
+            var data = userService.getPopularInstructorBySubCategory(subCategoryId);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

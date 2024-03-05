@@ -191,9 +191,9 @@ public class CourseController {
     }
     @Operation(summary = "Api 71: create course")
     @RequestMapping(value = "/teacher", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> create(@RequestBody CourseCreateRequest request){
+    public ResponseEntity<?> create(@RequestHeader("Authorization") String authorizationHeader, @RequestBody CourseCreateRequest request){
         try {
-            var data = courseService.create(request);
+            var data = courseService.create(authorizationHeader,request);
             return ResponseEntity.status(HttpStatus.CREATED).body(data);
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

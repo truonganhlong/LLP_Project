@@ -3,6 +3,8 @@ package com.llp.userservice.services;
 import com.llp.userservice.dtos.user.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface UserService {
     AuthenticationResponse register(RegisterRequest request);
 
@@ -21,4 +23,7 @@ public interface UserService {
 
     UserResponse getOtherUserInformation(int id);
 
+    List<InstructorResponse> getPopularInstructorByCategory(int categoryId);
+
+    List<InstructorResponse> getPopularInstructorBySubCategory(int subCategoryId);
 }

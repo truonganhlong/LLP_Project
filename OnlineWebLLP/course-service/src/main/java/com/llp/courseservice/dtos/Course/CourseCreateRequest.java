@@ -41,6 +41,4 @@ public class CourseCreateRequest {
     private MultipartFile imageLink;
     @JsonProperty(required = true)
     private double price;
-    @JsonProperty(required = true)
-    private Long createdBy;
 }
