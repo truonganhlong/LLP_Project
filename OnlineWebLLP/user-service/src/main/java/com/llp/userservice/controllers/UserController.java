@@ -1,7 +1,9 @@
 package com.llp.userservice.controllers;
 
+import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import com.llp.userservice.dtos.registerInstructor.FormRequest;
 import com.llp.userservice.dtos.user.UserUpdateRequest;
 import com.llp.userservice.entities.User;
 import com.llp.userservice.services.UserService;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -164,6 +167,31 @@ public class UserController {
             return ResponseEntity.ok(data);
         } catch (NotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InternalServerException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Api 126: change password")
+    @RequestMapping(value = "/changePassword", method = RequestMethod.PUT)
+    @PreAuthorize("hasRole('USER') || hasRole('TEACHER') || hasRole('ADMIN')")
+    public ResponseEntity<?> changePassword(Authentication authentication, @RequestParam String oldPass, @RequestParam String newPass, @RequestParam String reNewPass){
+        try {
+            if (authentication != null && authentication.getPrincipal() instanceof User) {
+                User user = (User) authentication.getPrincipal();
+                int userId = user.getId().intValue();
+                userService.changePassword(userId,oldPass,newPass,reNewPass);
+                return ResponseEntity.status(HttpStatus.CREATED).body("changed successfully");
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
+        } catch (NotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (BadRequestException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

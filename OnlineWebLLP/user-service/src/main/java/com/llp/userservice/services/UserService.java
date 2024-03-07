@@ -11,8 +11,6 @@ public interface UserService {
     AuthenticationResponse loginViaForm(AuthenticationRequest request);
     AuthenticationResponse registerAsAdmin(RegisterRequest request);
 
-    AuthenticationResponse loginViaFormAsAdmin(AuthenticationRequest request);
-
     UserResponse getUserInformation(String username);
 
     void updateInformation(String username, UserUpdateRequest request);
@@ -26,4 +24,9 @@ public interface UserService {
     List<InstructorResponse> getPopularInstructorByCategory(int categoryId);
 
     List<InstructorResponse> getPopularInstructorBySubCategory(int subCategoryId);
+
+    void forgetPassword(String email);
+    void changePassword(int userId, String oldPass, String newPass, String reNewPass);
+    AuthenticationResponse loginViaGoogle(RegisterGoogleRequest request);
+
 }

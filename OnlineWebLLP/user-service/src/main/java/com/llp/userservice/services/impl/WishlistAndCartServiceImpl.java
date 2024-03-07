@@ -1,9 +1,11 @@
 package com.llp.userservice.services.impl;
 
+import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.userservice.clients.CourseClient;
 import com.llp.userservice.clients.dtos.CourseCardResponse;
+import com.llp.userservice.clients.dtos.CourseTeacherResponse;
 import com.llp.userservice.dtos.wishlistAndCart.WishlistAndCartResponse;
 import com.llp.userservice.entities.WishlistAndCart;
 import com.llp.userservice.repositories.WishlistAndCartRepository;
@@ -23,7 +25,15 @@ public class WishlistAndCartServiceImpl implements WishlistAndCartService {
     @Override
     public void addToWishlist(int userId, String courseId) {
         try {
+            List<CourseTeacherResponse> courses = courseClient.getByTeacher(userId);
+            for (var course:courses) {
+                if(course.getId().toString().equals(courseId)){
+                    throw new ConflictException("This is your course, cant add");
+                }
+            }
             wishlistAndCartRepository.addToWishlist(courseId,userId);
+        } catch (ConflictException e){
+            throw new ConflictException(e.getMessage());
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
@@ -32,7 +42,15 @@ public class WishlistAndCartServiceImpl implements WishlistAndCartService {
     @Override
     public void addToCart(int userId, String courseId) {
         try {
+            List<CourseTeacherResponse> courses = courseClient.getByTeacher(userId);
+            for (var course:courses) {
+                if(course.getId().toString().equals(courseId)){
+                    throw new ConflictException("This is your course, cant add");
+                }
+            }
             wishlistAndCartRepository.addToCart(courseId,userId);
+        } catch (ConflictException e){
+            throw new ConflictException(e.getMessage());
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }

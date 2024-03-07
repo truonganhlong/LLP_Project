@@ -1,6 +1,7 @@
 package com.llp.orderservice.controllers;
 
 import com.llp.orderservice.services.OrderService;
+import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,6 +24,8 @@ public class OrderController {
         try {
             orderService.checkout(authorizationHeader,courseId,paymentId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Submit successfully");
+        } catch (ConflictException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

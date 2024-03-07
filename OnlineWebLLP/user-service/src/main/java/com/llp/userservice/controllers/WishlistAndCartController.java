@@ -1,5 +1,6 @@
 package com.llp.userservice.controllers;
 
+import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.userservice.entities.User;
@@ -35,6 +36,8 @@ public class WishlistAndCartController {
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
+        } catch (ConflictException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
@@ -53,6 +56,8 @@ public class WishlistAndCartController {
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
+        } catch (ConflictException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

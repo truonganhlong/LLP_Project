@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final YourCourseRepository yourCourseRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
     private final CourseClient courseClient;
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
@@ -89,6 +90,9 @@ public class UserServiceImpl implements UserService {
         try {
             var user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("There is no account like that. Please register a new one"));
+            if(!user.isVerified()){
+                throw new BadRequestException("This account is login by google");
+            }
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 throw new BadCredentialsException("Invalid password");
             }
@@ -106,6 +110,8 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException(e.getMessage());
         } catch (BadCredentialsException e){
             throw new BadCredentialsException(e.getMessage());
+        } catch (BadRequestException e){
+            throw new BadRequestException(e.getMessage());
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
@@ -146,12 +152,6 @@ public class UserServiceImpl implements UserService {
             throw new InternalServerException("Server Error");
         }
     }
-
-    @Override
-    public AuthenticationResponse loginViaFormAsAdmin(AuthenticationRequest request) {
-        return null;
-    }
-
 
     @Override
     public UserResponse getUserInformation(String username) {
@@ -289,6 +289,94 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void forgetPassword(String email) {
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new NotFoundException("There is no account like that. Please register a new one"));
+            String otp = generateOtp();
+            user.setOtp(Integer.parseInt(otp));
+            user.setPassword(passwordEncoder.encode(otp));
+            userRepository.save(user);
+            sendVerificationEmail(email,otp);
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public void changePassword(int userId, String oldPass, String newPass, String reNewPass) {
+        try {
+            if (!newPass.equals(reNewPass)){
+                throw new BadRequestException("New password and Re-enter new password must match");
+            }
+            var user = userRepository.findById((long) userId)
+                    .orElseThrow(() -> new NotFoundException("Not found any account"));
+            if (!passwordEncoder.matches(oldPass, user.getPassword())) {
+                throw new BadCredentialsException("Invalid old password");
+            }
+            user.setPassword(passwordEncoder.encode(newPass));
+            userRepository.save(user);
+        } catch (NotFoundException e){
+            throw new NotFoundException(e.getMessage());
+        } catch (BadRequestException e){
+            throw new BadRequestException(e.getMessage());
+        } catch (BadCredentialsException e){
+            throw new BadCredentialsException(e.getMessage());
+        } catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+    @Override
+    public AuthenticationResponse loginViaGoogle(RegisterGoogleRequest request) {
+        try {
+            if(!userRepository.findByEmail(request.getEmail()).isEmpty()){
+                User user = userRepository.findByEmail(request.getEmail()).get();
+                if(user.isVerified()){
+                    throw new BadRequestException("This account is login by form");
+                }
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getEmail(),
+                                null
+                        )
+                );
+                var token = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                        .token(token)
+                        .build();
+            } else {
+                Role role = roleRepository.findByName("USER");
+                if (role == null) {
+                    throw new IllegalStateException("Default user role not found");
+                }
+                var user = User.builder()
+                        .fullname(request.getFullName())
+                        .email(request.getEmail())
+                        .password(null)
+                        .verified(false)
+                        .imageLink("default-avatar.png")
+                        .participateDay(LocalDate.now())
+                        .build();
+                userRepository.save(user);
+                userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
+                List<UserRole> userRoleList = new ArrayList<>();
+                userRoleList.add(userRoleRepository.getById(new UserRoleKey((long) user.getId().intValue(), (long) role.getId().intValue())));
+                user.setUserRoles(userRoleList);
+                var token = jwtService.generateToken(user);
+                return AuthenticationResponse.builder()
+                        .token(token)
+                        .build();
+            }
+        }  catch (Exception e){
+            throw new InternalServerException("Server Error");
+        }
+    }
+
+
     private void insertImage(User user, MultipartFile imageLink) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
@@ -311,5 +399,17 @@ public class UserServiceImpl implements UserService {
         Path filePath = Paths.get(root, pastPath);
         File file = new File(String.valueOf(filePath));
         file.delete();
+    }
+
+    private String generateOtp(){
+        Random random = new Random();
+        int otpValue = 100000 + random.nextInt(900000);
+        return String.valueOf(otpValue);
+    }
+
+    private void sendVerificationEmail(String email, String otp){
+        String subject = "Online Web LLP";
+        String body = "Your verification otp is: " +otp + ". Your old password will also be set to this otp";
+        emailService.sendEmail(email,subject,body);
     }
 }

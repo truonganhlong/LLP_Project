@@ -3,6 +3,7 @@ package com.llp.orderservice.services.impl;
 import com.llp.orderservice.clients.CourseClient;
 import com.llp.orderservice.clients.UserClient;
 import com.llp.orderservice.clients.dtos.CourseCardResponse;
+import com.llp.orderservice.clients.dtos.CourseTeacherResponse;
 import com.llp.orderservice.clients.dtos.WishlistAndCartResponse;
 import com.llp.orderservice.dtos.order.OrderDetailResponse;
 import com.llp.orderservice.dtos.order.OrderResponse;
@@ -12,6 +13,7 @@ import com.llp.orderservice.repositories.OrderDetailRepository;
 import com.llp.orderservice.repositories.OrderRepository;
 import com.llp.orderservice.repositories.PaymentMethodRepository;
 import com.llp.orderservice.services.OrderService;
+import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -55,8 +57,14 @@ public class OrderServiceImpl implements OrderService {
                     userClient.removeFromWishlistAndCart(authorizationHeader,course.getId().toString());
                 }
             } else {
-                CourseCardResponse course = courseClient.getCourseCardById(courseId);
                 int userId = userClient.returnUserId(authorizationHeader);
+                List<CourseTeacherResponse> courses = courseClient.getByTeacher(userId);
+                for (var course:courses) {
+                    if(course.getId().toString().equals(courseId)){
+                        throw new ConflictException("This is your course, cant add");
+                    }
+                }
+                CourseCardResponse course = courseClient.getCourseCardById(courseId);
                 Order order = Order.builder()
                         .userId(((long) userId))
                         .orderTime(LocalDateTime.now())
@@ -74,6 +82,8 @@ public class OrderServiceImpl implements OrderService {
                 userClient.removeFromWishlistAndCart(authorizationHeader,course.getId().toString());
             }
 
+        } catch (ConflictException e){
+            throw new ConflictException(e.getMessage());
         } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
