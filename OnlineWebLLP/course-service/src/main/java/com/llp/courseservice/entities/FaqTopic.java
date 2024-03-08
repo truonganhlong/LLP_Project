@@ -21,8 +21,4 @@ public class FaqTopic {
     @JoinColumn(name = "topicId", nullable = false)
     @JsonIgnore
     private Topic topic;
-    @ManyToOne
-    @JoinColumn(name = "articleId")
-    @JsonIgnore
-    private Article article;
 }

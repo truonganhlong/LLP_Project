@@ -5,7 +5,6 @@ import com.llp.sharedproject.exceptions.ConflictException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.userservice.dtos.user.AuthenticationRequest;
-import com.llp.userservice.dtos.user.RegisterGoogleRequest;
 import com.llp.userservice.dtos.user.RegisterRequest;
 import com.llp.userservice.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,12 +79,12 @@ public class AuthController {
 
     @Operation(summary = "Api 127: login via google")
     @RequestMapping(value = "/loginViaGoogle", method = RequestMethod.POST)
-    public ResponseEntity<?> loginViaGoogle(@RequestBody RegisterGoogleRequest request){
+    public ResponseEntity<?> loginViaGoogle(@RequestParam String tokenId){
         try {
-            userService.loginViaGoogle(request);
+            userService.loginViaGoogle(tokenId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Login successfully");
-        } catch (NotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (InternalServerException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

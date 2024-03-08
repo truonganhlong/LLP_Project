@@ -1,9 +1,6 @@
 package com.llp.userservice.services.impl;
 
-import com.llp.sharedproject.exceptions.BadRequestException;
-import com.llp.sharedproject.exceptions.ConflictException;
-import com.llp.sharedproject.exceptions.InternalServerException;
-import com.llp.sharedproject.exceptions.NotFoundException;
+import com.llp.sharedproject.exceptions.*;
 import com.llp.userservice.clients.CourseClient;
 import com.llp.userservice.clients.dtos.CourseTeacherResponse;
 import com.llp.userservice.dtos.user.*;
@@ -18,12 +15,15 @@ import com.llp.userservice.repositories.UserRoleRepository;
 import com.llp.userservice.repositories.YourCourseRepository;
 import com.llp.userservice.services.JwtService;
 import com.llp.userservice.services.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -39,6 +39,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final String root = System.getProperty("user.dir") + "/shared-project/src/main/resources/static/";
+    private static final String GOOGLE_TOKEN_VERIFICATION_URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=";
     private static final String directory = "images/user/";
 
     private final UserRepository userRepository;
@@ -331,47 +332,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationResponse loginViaGoogle(RegisterGoogleRequest request) {
+    public AuthenticationResponse loginViaGoogle(String tokenId) {
         try {
-            if(!userRepository.findByEmail(request.getEmail()).isEmpty()){
-                User user = userRepository.findByEmail(request.getEmail()).get();
-                if(user.isVerified()){
-                    throw new BadRequestException("This account is login by form");
+            boolean isTokenValid = verifyGoogleToken(tokenId);
+            if (isTokenValid) {
+                GoogleUserInfo userInfo = decodeGoogleToken(tokenId);
+                if(userRepository.findByEmail(userInfo.getEmail()).isEmpty()){
+                    Role role = roleRepository.findByName("USER");
+
+                    if (role == null) {
+                        throw new IllegalStateException("Default user role not found");
+                    }
+                    var user = User.builder()
+                            .fullname(userInfo.getName())
+                            .email(userInfo.getEmail())
+                            .password(null)
+                            .verified(false)
+                            .imageLink(userInfo.getPicture())
+                            .participateDay(LocalDate.now())
+                            .build();
+                    userRepository.save(user);
+                    userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
+                    List<UserRole> userRoleList = new ArrayList<>();
+                    userRoleList.add(userRoleRepository.getById(new UserRoleKey((long) user.getId().intValue(), (long) role.getId().intValue())));
+                    user.setUserRoles(userRoleList);
+                    var token = jwtService.generateToken(user);
+                    return AuthenticationResponse.builder()
+                            .token(token)
+                            .build();
+                } else {
+                    User user = userRepository.findByEmail(userInfo.getEmail()).get();
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    userInfo.getEmail(),
+                                    null
+                            )
+                    );
+                    var token = jwtService.generateToken(user);
+                    return AuthenticationResponse.builder()
+                            .token(token)
+                            .build();
                 }
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(
-                                request.getEmail(),
-                                null
-                        )
-                );
-                var token = jwtService.generateToken(user);
-                return AuthenticationResponse.builder()
-                        .token(token)
-                        .build();
             } else {
-                Role role = roleRepository.findByName("USER");
-                if (role == null) {
-                    throw new IllegalStateException("Default user role not found");
-                }
-                var user = User.builder()
-                        .fullname(request.getFullName())
-                        .email(request.getEmail())
-                        .password(null)
-                        .verified(false)
-                        .imageLink("default-avatar.png")
-                        .participateDay(LocalDate.now())
-                        .build();
-                userRepository.save(user);
-                userRoleRepository.create(user.getId().intValue(), role.getId().intValue());
-                List<UserRole> userRoleList = new ArrayList<>();
-                userRoleList.add(userRoleRepository.getById(new UserRoleKey((long) user.getId().intValue(), (long) role.getId().intValue())));
-                user.setUserRoles(userRoleList);
-                var token = jwtService.generateToken(user);
-                return AuthenticationResponse.builder()
-                        .token(token)
-                        .build();
+                throw new BadCredentialsException("Cant login via google");
             }
-        }  catch (Exception e){
+        } catch (BadCredentialsException e){
+            throw new BadCredentialsException(e.getMessage());
+        } catch (Exception e){
             throw new InternalServerException("Server Error");
         }
     }
@@ -411,5 +418,32 @@ public class UserServiceImpl implements UserService {
         String subject = "Online Web LLP";
         String body = "Your verification otp is: " +otp + ". Your old password will also be set to this otp";
         emailService.sendEmail(email,subject,body);
+    }
+
+    private boolean verifyGoogleToken(String tokenId) {
+        // Make a request to Google's token verification endpoint
+        String verificationUrl = GOOGLE_TOKEN_VERIFICATION_URL + tokenId;
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            // Send a GET request to Google's token verification endpoint
+            Map<String, Object> response = restTemplate.getForObject(verificationUrl, Map.class);
+            // Check if the response indicates a valid token
+            return response != null && response.containsKey("sub");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    private static GoogleUserInfo decodeGoogleToken(String tokenId) {
+        try {
+            Claims claims = Jwts.parser().parseClaimsJwt(tokenId).getBody();
+
+            String email = claims.get("email", String.class);
+            String fullName = claims.get("name", String.class);
+            String pictureUrl = claims.get("picture", String.class);
+
+            return new GoogleUserInfo(email, fullName, pictureUrl);
+        } catch (Exception e) {
+            throw new InternalServerException("Server Error");
+        }
     }
 }

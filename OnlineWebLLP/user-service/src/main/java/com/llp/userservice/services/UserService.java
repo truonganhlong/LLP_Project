@@ -27,6 +27,6 @@ public interface UserService {
 
     void forgetPassword(String email);
     void changePassword(int userId, String oldPass, String newPass, String reNewPass);
-    AuthenticationResponse loginViaGoogle(RegisterGoogleRequest request);
+    AuthenticationResponse loginViaGoogle(String tokenId);
 
 }

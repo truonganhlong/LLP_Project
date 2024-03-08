@@ -1,4 +1,4 @@
-package com.llp.userservice.dtos.user;
+package com.llp.courseservice.dtos.FaqTopic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -8,9 +8,11 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class RegisterGoogleRequest {
+public class FaqTopicRequest {
     @JsonProperty(required = true)
-    private String fullName;
+    private String question;
     @JsonProperty(required = true)
-    private String email;
+    private String answer;
+    @JsonProperty(required = true)
+    private int topicId;
 }

@@ -20,7 +20,5 @@ public class Category {
     private String imageLink;
     private boolean status;
     @OneToMany(mappedBy = "category")
-    private List<Article> articles;
-    @OneToMany(mappedBy = "category")
     private List<SubCategory> subCategories;
 }
