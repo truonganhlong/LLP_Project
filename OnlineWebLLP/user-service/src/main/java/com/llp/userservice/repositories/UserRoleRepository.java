@@ -9,10 +9,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, UserRoleKey> {
     @Transactional
     @Modifying
     @Query(value = "INSERT INTO userRole (userId,roleId) VALUES(:userId,:roleId)", nativeQuery = true)
     void create(@Param("userId") int userId, @Param("roleId") int roleId);
+
+    @Query(value = "SELECT us.id.userId FROM UserRole us WHERE us.id.roleId = 1")
+    List<Integer> returnAllUserIds();
+
+    @Query(value = "SELECT us.id.userId FROM UserRole us WHERE us.id.roleId = 2")
+    List<Integer> returnAllTeacherIds();
 }

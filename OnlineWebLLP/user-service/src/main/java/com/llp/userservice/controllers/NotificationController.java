@@ -2,7 +2,7 @@ package com.llp.userservice.controllers;
 
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.userservice.entities.User;
-import com.llp.userservice.services.MessageService;
+import com.llp.userservice.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,22 +12,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user/message")
+@RequestMapping("/api/user/notification")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
-public class MessageController {
-    private final MessageService messageService;
+public class NotificationController {
+    private final NotificationService notificationService;
 
-    @Operation(summary = "Api 131: send message")
-    @RequestMapping(value = "/send", method = RequestMethod.POST)
-    @PreAuthorize("hasRole('USER') || hasRole('TEACHER') || hasRole('ADMIN')")
-    public ResponseEntity<?> sendMessage(Authentication authentication,@RequestParam String to,@RequestParam String content){
+    @Operation(summary = "Api 134: admin send notification to all")
+    @RequestMapping(value = "/adminSendToUserAndTeacher", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> adminSendToUserAndTeacher(Authentication authentication, @RequestParam String forWho, @RequestParam String message){
         try {
             if (authentication != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
                 int userId = user.getId().intValue();
-                messageService.send(userId, to, content);
-                return ResponseEntity.status(HttpStatus.CREATED).body("Send message successfully");
+                notificationService.adminSendToUserAndTeacher(userId, forWho, message);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Send notification successfully");
             }
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -37,16 +37,16 @@ public class MessageController {
         }
     }
 
-    @Operation(summary = "Api 132: get message with other user")
-    @RequestMapping(value = "/getMessageWith", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('USER') || hasRole('TEACHER') || hasRole('ADMIN')")
-    public ResponseEntity<?> getMessageWith(Authentication authentication, @RequestParam int to){
+    @Operation(summary = "Api 135: teacher send notification to their student in their course")
+    @RequestMapping(value = "/teacherSendToUser", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> teacherSendToUser(Authentication authentication, @RequestParam String courseId, @RequestParam String message){
         try {
             if (authentication != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
                 int userId = user.getId().intValue();
-                var data = messageService.getMessageWith(userId, to);
-                return ResponseEntity.ok(data);
+                notificationService.teacherSendToUser(userId, courseId, message);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Send notification successfully");
             }
             else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -56,15 +56,15 @@ public class MessageController {
         }
     }
 
-    @Operation(summary = "Api 133: get contacts of user")
-    @RequestMapping(value = "/getContact", method = RequestMethod.GET)
+    @Operation(summary = "Api 136: get notifications of user")
+    @RequestMapping(value = "/getYourNotification", method = RequestMethod.GET)
     @PreAuthorize("hasRole('USER') || hasRole('TEACHER') || hasRole('ADMIN')")
-    public ResponseEntity<?> getContact(Authentication authentication){
+    public ResponseEntity<?> getYourNotification(Authentication authentication){
         try {
             if (authentication != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
                 int userId = user.getId().intValue();
-                var data = messageService.getContact(userId);
+                var data = notificationService.getYourNotification(userId);
                 return ResponseEntity.ok(data);
             }
             else {
