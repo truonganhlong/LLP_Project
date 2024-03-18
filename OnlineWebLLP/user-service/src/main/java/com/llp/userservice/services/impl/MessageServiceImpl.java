@@ -2,6 +2,7 @@ package com.llp.userservice.services.impl;
 
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
+import com.llp.sharedproject.sharedFunc.SharedFunction;
 import com.llp.userservice.dtos.message.ChatResponse;
 import com.llp.userservice.dtos.message.MessageResponse;
 import com.llp.userservice.entities.Message;
@@ -32,7 +33,7 @@ public class MessageServiceImpl implements MessageService {
             User userTo = userRepository.findByEmail(to)
                     .orElseThrow(() -> new NotFoundException("User not found"));
             Message message = Message.builder()
-                    .message(content)
+                    .message(SharedFunction.encodeMessage(content))
                     .createdAt(LocalDateTime.now())
                     .userReceive(userTo)
                     .userSend(userRepository.getById(userId).get())

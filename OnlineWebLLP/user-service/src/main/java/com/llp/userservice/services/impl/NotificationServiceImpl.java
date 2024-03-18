@@ -2,6 +2,7 @@ package com.llp.userservice.services.impl;
 
 import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
+import com.llp.sharedproject.sharedFunc.SharedFunction;
 import com.llp.userservice.dtos.notification.NotificationResponse;
 import com.llp.userservice.entities.Notification;
 import com.llp.userservice.mappers.NotificationMapper;
@@ -33,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
                 List<Integer> userIds = userRoleRepository.returnAllUserIds();
                 for (var user:userIds) {
                     Notification notification = Notification.builder()
-                            .message(message)
+                            .message(SharedFunction.encodeMessage(message))
                             .createdAt(LocalDateTime.now())
                             .createdBy((long) userId)
                             .build();
@@ -44,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
                 List<Integer> userIds = userRoleRepository.returnAllTeacherIds();
                 for (var user:userIds) {
                     Notification notification = Notification.builder()
-                            .message(message)
+                            .message(SharedFunction.encodeMessage(message))
                             .createdAt(LocalDateTime.now())
                             .createdBy((long) userId)
                             .build();
@@ -67,7 +68,7 @@ public class NotificationServiceImpl implements NotificationService {
             List<Integer> userIds = yourCourseRepository.getStudentIds(courseId);
             for (var user:userIds) {
                 Notification notification = Notification.builder()
-                        .message(message)
+                        .message(SharedFunction.encodeMessage(message))
                         .createdAt(LocalDateTime.now())
                         .createdBy((long) userId)
                         .build();

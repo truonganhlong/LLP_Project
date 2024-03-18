@@ -1,5 +1,6 @@
 package com.llp.userservice.mappers;
 
+import com.llp.sharedproject.sharedFunc.SharedFunction;
 import com.llp.userservice.dtos.notification.NotificationResponse;
 import com.llp.userservice.entities.Notification;
 
@@ -9,8 +10,8 @@ public class NotificationMapper {
     public static NotificationResponse convertToResponse(Notification notification){
         return NotificationResponse.builder()
                 .id(notification.getId())
-                .message(notification.getMessage())
-                .createdAt(notification.getCreatedAt().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .message(SharedFunction.decodeMessage(notification.getMessage()))
+                .createdAt(notification.getCreatedAt().format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")))
                 .build();
     }
 }
