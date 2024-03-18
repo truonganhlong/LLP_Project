@@ -15,6 +15,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = {"category"})
 public class CategoryServiceImpl implements CategoryService {
 
     private static final String root = System.getProperty("user.dir") + "/shared-project/src/main/resources/static/";
@@ -39,6 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final SubCategoryRepository subCategoryRepository;
     private final TopicRepository topicRepository;
     @Override
+    @Cacheable(cacheNames = "category/getAll")
     public List<CategoryAdminResponse> getAll() {
         try {
             List<Category> categories = categoryRepository.findAll();
@@ -49,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "category/getAllByUser")
     public List<CategoryUserResponse> getAllByUser() {
         try {
             List<CategoryRepository.CategoryByUser> categories = categoryRepository.getAllByUser();
@@ -59,6 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "category/getNameByUser")
     public List<CategoryNameResponse> getNameByUser() {
         try {
             List<CategoryRepository.CategoryByName> categories = categoryRepository.getNameByUser();
@@ -69,6 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "category/getById", key = "#id")
     public CategoryAdminResponse getById(int id) {
         try {
             Category category = categoryRepository.getById(id);
@@ -84,6 +93,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "category/getAll"),
+                    @CacheEvict(cacheNames = "category/getAllByUser"),
+                    @CacheEvict(cacheNames = "category/getNameByUser"),
+                    @CacheEvict(cacheNames = "category/getCategoryToTopic"),
+                    @CacheEvict(cacheNames = "category/getById", key = "#id")
+            }
+    )
     public void create(CategoryCreateRequest request) {
         try {
             Category category = Category.builder()
@@ -99,6 +117,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "category/getAll"),
+                    @CacheEvict(cacheNames = "category/getAllByUser"),
+                    @CacheEvict(cacheNames = "category/getNameByUser"),
+                    @CacheEvict(cacheNames = "category/getCategoryToTopic"),
+                    @CacheEvict(cacheNames = "category/getById", key = "#id")
+            }
+    )
     public void update(int id, CategoryUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -124,6 +151,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "category/getAll"),
+                    @CacheEvict(cacheNames = "category/getAllByUser"),
+                    @CacheEvict(cacheNames = "category/getNameByUser"),
+                    @CacheEvict(cacheNames = "category/getCategoryToTopic"),
+                    @CacheEvict(cacheNames = "category/getById", key = "#id")
+            }
+    )
     public void updateStatus(int id) {
         try {
             Category category = categoryRepository.getById(id);
@@ -140,6 +176,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "category/getAll"),
+                    @CacheEvict(cacheNames = "category/getAllByUser"),
+                    @CacheEvict(cacheNames = "category/getNameByUser"),
+                    @CacheEvict(cacheNames = "category/getCategoryToTopic"),
+                    @CacheEvict(cacheNames = "category/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Category category = categoryRepository.getById(id);
@@ -156,6 +201,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "category/getCategoryToTopic")
     public List<CategoryToTopicResponse> getCategoryToTopic() {
         try {
             List<CategoryRepository.CategoryByName> categories = categoryRepository.getNameByUser();

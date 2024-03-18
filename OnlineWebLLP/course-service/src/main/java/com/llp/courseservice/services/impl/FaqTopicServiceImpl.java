@@ -10,6 +10,9 @@ import com.llp.courseservice.services.FaqTopicService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +21,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "faqTopic")
 public class FaqTopicServiceImpl implements FaqTopicService {
     private final FaqTopicRepository faqTopicRepository;
     private final TopicRepository topicRepository;
     @Override
+    @Cacheable(cacheNames = "faqTopic/getAllByTopic", key = "#topicId")
     public List<FaqTopicResponse> getAllByTopic(int topicId) {
         try {
             List<FaqTopic> faqTopics = faqTopicRepository.getByTopic(topicId);
@@ -32,6 +37,7 @@ public class FaqTopicServiceImpl implements FaqTopicService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "faqTopic/getAllByTopic", key = "#request.topicId")
     public void create(FaqTopicRequest request) {
         try {
             FaqTopic faqTopic = FaqTopic.builder()
@@ -46,6 +52,7 @@ public class FaqTopicServiceImpl implements FaqTopicService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "faqTopic/getAllByTopic", allEntries = true)
     public void delete(int id) {
         try {
             FaqTopic faqTopic = faqTopicRepository.getById(id);

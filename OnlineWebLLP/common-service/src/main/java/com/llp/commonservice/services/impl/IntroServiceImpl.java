@@ -13,6 +13,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,12 +33,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = {"intro"})
 public class IntroServiceImpl implements IntroService {
     private static final String root = System.getProperty("user.dir") + "/shared-project/src/main/resources/static/";
     private static final String directory = "images/intro/";
     private final IntroRepository introRepository;
     private final IntroMapRepository introMapRepository;
     @Override
+    @Cacheable(cacheNames = "intro/getAll")
     public List<IntroResponse> getAll() {
         try {
             List<Intro> intros = introRepository.findAll();
@@ -49,6 +55,7 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Cacheable(cacheNames = "intro/getAllByIntroMapId", key = "#introMapId")
     public List<IntroResponse> getAllByIntroMapId(int introMapId) {
         try {
             List<Intro> intros = introRepository.getAllByIntroMapId(introMapId);
@@ -61,6 +68,7 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Cacheable(cacheNames = "intro/getAllByIntroMapIdByUser", key = "#introMapId")
     public List<IntroResponse> getAllByIntroMapIdByUser(int introMapId) {
         try {
             List<Intro> intros = introRepository.getAllByIntroMapIdByUser(introMapId);
@@ -73,6 +81,7 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Cacheable(cacheNames = "intro/getById", key = "#id")
     public IntroResponse getById(int id) {
         try {
             Intro intro = introRepository.getById(id);
@@ -88,6 +97,13 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "intro/getAll"),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapId", key = "#request.introMapId"),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapIdByUser", key ="#request.introMapId")
+            }
+    )
     public void create(IntroCreateRequest request) {
         try {
             Intro intro = Intro.builder()
@@ -105,6 +121,14 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "intro/getAll"),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapId", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapIdByUser", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getById", key = "#id")
+            }
+    )
     public void update(int id, IntroUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -132,6 +156,14 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "intro/getAll"),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapId", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapIdByUser", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getById", key = "#id")
+            }
+    )
     public void updateStatus(int id) {
         try {
             Intro intro = introRepository.getById(id);
@@ -148,6 +180,14 @@ public class IntroServiceImpl implements IntroService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "intro/getAll"),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapId", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getAllByIntroMapIdByUser", allEntries = true),
+                    @CacheEvict(cacheNames = "intro/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Intro intro = introRepository.getById(id);

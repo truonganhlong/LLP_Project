@@ -11,6 +11,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +23,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "language")
 public class LanguageServiceImpl implements LanguageService {
     private final LanguageRepository languageRepository;
 
     @Override
+    @Cacheable(cacheNames = "language/getAll")
     public List<LanguageResponse> getAll() {
         try {
             List<Language> languages = languageRepository.findAll();
@@ -33,6 +39,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @Cacheable(cacheNames = "language/getById", key = "#id")
     public LanguageResponse getById(int id) {
         try {
             Language language = languageRepository.getById(id);
@@ -48,6 +55,7 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "language/getAll")
     public void create(LanguageCreateRequest request) {
         try {
             Language language = Language.builder()
@@ -60,6 +68,12 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "language/getAll"),
+                    @CacheEvict(cacheNames = "language/getById", key = "#id")
+            }
+    )
     public void update(int id, LanguageUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -81,6 +95,12 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "language/getAll"),
+                    @CacheEvict(cacheNames = "language/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Language language = languageRepository.getById(id);

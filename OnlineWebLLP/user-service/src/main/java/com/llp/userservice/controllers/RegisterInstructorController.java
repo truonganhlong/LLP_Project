@@ -6,6 +6,7 @@ import com.llp.userservice.entities.User;
 import com.llp.userservice.services.RegisterInstructorService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

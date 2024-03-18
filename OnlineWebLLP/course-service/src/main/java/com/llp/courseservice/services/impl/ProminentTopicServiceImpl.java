@@ -1,5 +1,7 @@
 package com.llp.courseservice.services.impl;
 
+import com.llp.courseservice.clients.UserClient;
+import com.llp.courseservice.clients.dtos.InstructorResponse;
 import com.llp.courseservice.dtos.Course.CourseCardResponse;
 import com.llp.courseservice.dtos.ProminentTopic.ProminentTopicAdminResponse;
 import com.llp.courseservice.dtos.ProminentTopic.ProminentTopicCreateRequest;
@@ -17,6 +19,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +35,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "prominentTopic")
 public class ProminentTopicServiceImpl implements ProminentTopicService {
     private final ProminentTopicRepository prominentTopicRepository;
     private final CourseRepository courseRepository;
     private final DiscountService discountService;
     private final TopicRepository topicRepository;
+    private final UserClient userClient;
 
     @Override
+    @Cacheable(cacheNames = "prominentTopic/getAllByAdmin")
     public List<ProminentTopicAdminResponse> getAllByAdmin() {
         try {
             List<ProminentTopic> prominentTopics = prominentTopicRepository.findAll();
@@ -56,7 +65,8 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
                 List<CourseCardResponse> courseCardResponses = courseCards.stream().map(CourseMapper::convertToCardResponse).collect(Collectors.toList());
                 for (var courseCardResponse:courseCardResponses) {
                     //feign client user later
-                    courseCardResponse.setInstructor(null);
+                    InstructorResponse instructor = userClient.getInstructorInformation(courseCardResponse.getUserId());
+                    courseCardResponse.setInstructor(instructor.getFullname());
                     courseCardResponse.setDiscountPrice(discountService.returnDiscountPrice(courseCardResponse.getId().toString()));
                 }
                 prominentTopic.setCourseCardResponses(courseCardResponses);
@@ -68,6 +78,7 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
     }
 
     @Override
+    @Cacheable(cacheNames = "prominentTopic/getById", key = "#id")
     public ProminentTopicAdminResponse getById(int id) {
         try {
             ProminentTopic prominentTopic = prominentTopicRepository.getById(id);
@@ -83,6 +94,7 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "prominentTopic/getAllByAdmin")
     public void create(ProminentTopicCreateRequest request) {
         try {
             ProminentTopic prominentTopic = ProminentTopic.builder()
@@ -97,6 +109,12 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "prominentTopic/getAllByAdmin"),
+                    @CacheEvict(cacheNames = "prominentTopic/getById", key = "#id")
+            }
+    )
     public void update(int id, ProminentTopicUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -119,6 +137,12 @@ public class ProminentTopicServiceImpl implements ProminentTopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "prominentTopic/getAllByAdmin"),
+                    @CacheEvict(cacheNames = "prominentTopic/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             ProminentTopic prominentTopic = prominentTopicRepository.getById(id);

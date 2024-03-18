@@ -11,6 +11,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +23,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "level")
 public class LevelServiceImpl implements LevelService {
     private final LevelRepository levelRepository;
 
     @Override
+    @Cacheable(cacheNames = "level/getAll")
     public List<LevelResponse> getAll() {
         try {
             List<Level> levels = levelRepository.findAll();
@@ -33,6 +39,7 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
+    @Cacheable(cacheNames = "level/getById", key = "#id")
     public LevelResponse getById(int id) {
         try {
             Level level = levelRepository.getById(id);
@@ -48,6 +55,7 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "level/getAll")
     public void create(LevelCreateRequest request) {
         try {
             Level level = Level.builder()
@@ -60,6 +68,12 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "level/getAll"),
+                    @CacheEvict(cacheNames = "level/getById", key = "#id")
+            }
+    )
     public void update(int id, LevelUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -81,6 +95,12 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "level/getAll"),
+                    @CacheEvict(cacheNames = "level/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Level level = levelRepository.getById(id);

@@ -15,6 +15,8 @@ import com.llp.userservice.repositories.*;
 import com.llp.userservice.services.JwtService;
 import com.llp.userservice.services.RegisterInstructorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = {"registerInstructor"})
 public class RegisterInstructorServiceImpl implements RegisterInstructorService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -31,6 +34,7 @@ public class RegisterInstructorServiceImpl implements RegisterInstructorService 
     private final UserRoleRepository userRoleRepository;
     private final JwtService jwtService;
     @Override
+    @Cacheable(value = "registerInstructor/getAllQuestion")
     public List<QuestionResponse> getAllQuestion() {
         try {
             List<Question> questions = questionRepository.findAll();

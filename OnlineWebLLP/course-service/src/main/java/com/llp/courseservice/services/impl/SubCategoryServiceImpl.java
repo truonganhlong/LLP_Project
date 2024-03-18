@@ -13,6 +13,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +25,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "subCategory")
 public class SubCategoryServiceImpl implements SubCategoryService {
     private final SubCategoryRepository subCategoryRepository;
     private final CategoryRepository categoryRepository;
     @Override
+    @Cacheable(cacheNames = "subCategory/getAll")
     public List<SubCategoryAdminResponse> getAll() {
         try {
             List<SubCategory> subCategories = subCategoryRepository.findAll();
@@ -35,6 +41,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "subCategory/getByAdminFilterByCategory", key = "#categoryId")
     public List<SubCategoryAdminResponse> getByAdminFilterByCategory(int categoryId) {
         try {
             List<SubCategory> subCategories = subCategoryRepository.getByAdminFilterByCategory(categoryId);
@@ -45,6 +52,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "subCategory/getByUserFilterByCategory", key = "#categoryId")
     public List<SubCategoryUserResponse> getByUserFilterByCategory(int categoryId) {
         try {
             List<SubCategoryRepository.SubCategoryByName> subCategories = subCategoryRepository.getByUserFilterByCategory(categoryId);
@@ -55,6 +63,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Cacheable(cacheNames = "subCategory/getById", key = "#id")
     public SubCategoryAdminResponse getById(int id) {
         try {
             SubCategory subCategory = subCategoryRepository.getById(id);
@@ -70,6 +79,13 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "subCategory/getAll"),
+                    @CacheEvict(cacheNames = "subCategory/getByAdminFilterByCategory", key = "#request.categoryId"),
+                    @CacheEvict(cacheNames = "subCategory/getByUserFilterByCategory", key = "#request.categoryId")
+            }
+    )
     public void create(SubCategoryCreateRequest request) {
         try {
             SubCategory subCategory = SubCategory.builder()
@@ -84,6 +100,14 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "subCategory/getAll"),
+                    @CacheEvict(cacheNames = "subCategory/getByAdminFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getByUserFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getById", key = "#id")
+            }
+    )
     public void update(int id, SubCategoryUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -105,6 +129,14 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "subCategory/getAll"),
+                    @CacheEvict(cacheNames = "subCategory/getByAdminFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getByUserFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getById", key = "#id")
+            }
+    )
     public void updateStatus(int id) {
         try {
             SubCategory subCategory = subCategoryRepository.getById(id);
@@ -121,6 +153,14 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "subCategory/getAll"),
+                    @CacheEvict(cacheNames = "subCategory/getByAdminFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getByUserFilterByCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "subCategory/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             SubCategory subCategory = subCategoryRepository.getById(id);
