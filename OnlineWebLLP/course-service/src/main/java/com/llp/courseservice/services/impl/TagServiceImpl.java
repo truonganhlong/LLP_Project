@@ -16,6 +16,9 @@ import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,7 @@ public class TagServiceImpl implements TagService {
     private final CourseTagRepository courseTagRepository;
     private final CourseRepository courseRepository;
     @Override
+    @Cacheable(cacheNames = "tag/getAll")
     public List<TagResponse> getAll() {
         try {
             List<Tag> tags = tagRepository.findAll();
@@ -44,6 +48,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Cacheable(cacheNames = "tag/getById", key = "#id")
     public TagResponse getById(int id) {
         try {
             Tag tag = tagRepository.getById(id);
@@ -59,6 +64,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "tag/getAll")
     public void create(TagCreateRequest request) {
         try {
             Tag tag = Tag.builder()
@@ -71,6 +77,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "tag/getAll"),
+                    @CacheEvict(cacheNames = "tag/getById", key = "#id")
+            }
+    )
     public void update(int id, TagUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -92,6 +104,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "tag/getAll"),
+                    @CacheEvict(cacheNames = "tag/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Tag tag = tagRepository.getById(id);

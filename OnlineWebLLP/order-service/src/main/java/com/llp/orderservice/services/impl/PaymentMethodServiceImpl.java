@@ -8,6 +8,8 @@ import com.llp.orderservice.services.PaymentMethodService;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +18,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "payment")
 public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentMethodRepository paymentMethodRepository;
 
 
     @Override
+    @Cacheable(cacheNames = "payment/getAll")
     public List<PaymentMethodResponse> getAll() {
         try {
             List<PaymentMethod> paymentMethods = paymentMethodRepository.findAll();
@@ -31,6 +35,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
+    @Cacheable(cacheNames = "payment/getById", key = "#id")
     public PaymentMethodResponse getById(int id) {
         try {
             PaymentMethod paymentMethod = paymentMethodRepository.getById(id);

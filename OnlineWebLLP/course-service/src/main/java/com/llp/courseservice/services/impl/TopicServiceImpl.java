@@ -13,6 +13,10 @@ import com.llp.sharedproject.exceptions.BadRequestException;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +25,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "topic")
 public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final SubCategoryRepository subCategoryRepository;
     @Override
+    @Cacheable(cacheNames = "topic/getAll")
     public List<TopicAdminResponse> getAll() {
         try {
             List<Topic> topics = topicRepository.findAll();
@@ -35,6 +41,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Cacheable(cacheNames = "topic/getByAdminFilterBySubCategory", key = "#subCategoryId")
     public List<TopicAdminResponse> getByAdminFilterBySubCategory(int subCategoryId) {
         try {
             List<Topic> topics = topicRepository.getByAdminFilterBySubCategory(subCategoryId);
@@ -45,6 +52,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Cacheable(cacheNames = "topic/getByUserFilterBySubCategory", key = "#subCategoryId")
     public List<TopicNameResponse> getByUserFilterBySubCategory(int subCategoryId) {
         try {
             List<TopicRepository.TopicByName> topics = topicRepository.getByUserFilterBySubCategory(subCategoryId);
@@ -55,6 +63,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Cacheable(cacheNames = "topic/getById", key = "#id")
     public TopicAdminResponse getById(int id) {
         try {
             Topic topic = topicRepository.getById(id);
@@ -70,6 +79,13 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "topic/getAll"),
+                    @CacheEvict(cacheNames = "topic/getByAdminFilterBySubCategory", key = "#request.subCategoryId"),
+                    @CacheEvict(cacheNames = "topic/getByUserFilterBySubCategory", key = "#request.subCategoryId")
+            }
+    )
     public void create(TopicCreateRequest request) {
         try {
             Topic topic = Topic.builder()
@@ -86,6 +102,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "topic/getAll"),
+                    @CacheEvict(cacheNames = "topic/getByAdminFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getByUserFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getById", key = "#id")
+            }
+    )
     public void update(int id, TopicUpdateRequest request) {
         try {
             if(Objects.isNull(request)){
@@ -109,6 +133,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "topic/getAll"),
+                    @CacheEvict(cacheNames = "topic/getByAdminFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getByUserFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getById", key = "#id")
+            }
+    )
     public void updateStatus(int id) {
         try {
             Topic topic = topicRepository.getById(id);
@@ -125,6 +157,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "topic/getAll"),
+                    @CacheEvict(cacheNames = "topic/getByAdminFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getByUserFilterBySubCategory", allEntries = true),
+                    @CacheEvict(cacheNames = "topic/getById", key = "#id")
+            }
+    )
     public void delete(int id) {
         try {
             Topic topic = topicRepository.getById(id);
