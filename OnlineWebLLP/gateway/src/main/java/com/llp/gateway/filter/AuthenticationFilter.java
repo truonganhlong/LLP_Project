@@ -82,6 +82,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/subCategory/public",
                 "/api/course/tag/public",
                 "/api/course/topic/public",
+                "/api/course/visitCourse/public",
                 "/api/order/paymentMethod/public",
                 "/api/order/order/public",
                 "/api/user/user/public"
@@ -102,6 +103,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/subCategory/admin",
                 "/api/course/tag/admin",
                 "/api/course/topic/admin",
+                "/api/course/visitCourse/admin",
                 "/api/order/paymentMethod/admin",
                 "/api/order/order/admin",
                 "/api/user/user/admin"
@@ -122,6 +124,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/subCategory/user",
                 "/api/course/tag/user",
                 "/api/course/topic/user",
+                "/api/course/visitCourse/user",
                 "/api/order/paymentMethod/user",
                 "/api/order/order/user",
                 "/api/user/user/user"
@@ -142,6 +145,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 "/api/course/subCategory/teacher",
                 "/api/course/tag/teacher",
                 "/api/course/topic/teacher",
+                "/api/course/visitCourse/teacher",
                 "/api/order/paymentMethod/teacher",
                 "/api/order/order/teacher",
                 "/api/user/user/teacher"

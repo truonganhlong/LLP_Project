@@ -15,10 +15,7 @@ import com.llp.courseservice.entities.Specialized;
 import com.llp.courseservice.mappers.CourseMapper;
 import com.llp.courseservice.mappers.LectureMapper;
 import com.llp.courseservice.repositories.*;
-import com.llp.courseservice.services.CourseService;
-import com.llp.courseservice.services.DiscountService;
-import com.llp.courseservice.services.LectureService;
-import com.llp.courseservice.services.SectionService;
+import com.llp.courseservice.services.*;
 import com.llp.sharedproject.exceptions.InternalServerException;
 import com.llp.sharedproject.exceptions.NotFoundException;
 import com.llp.sharedproject.sharedFunc.ReturnCourseFilter;
@@ -64,6 +61,7 @@ public class CourseServiceImpl implements CourseService {
     private final LectureService lectureService;
     private final LastViewCourseRepository lastViewCourseRepository;
     private final SpecializedRepository specializedRepository;
+    private final VisitCourseService visitCourseService;
     private final UserClient userClient;
     @Override
     public CourseOverviewResponse getCourseOverview(String id) {
@@ -415,6 +413,10 @@ public class CourseServiceImpl implements CourseService {
                 } else {
                     lastViewCourseRepository.update(String.valueOf(data.getId()), userClient.returnUserId(authorizationHeader));
                 }
+                //add visit course
+                visitCourseService.create(authorizationHeader, String.valueOf(data.getId()));
+            } else{
+                visitCourseService.create(null, String.valueOf(data.getId()));
             }
             data.setLectureNum(lectureNum);
             return data;
